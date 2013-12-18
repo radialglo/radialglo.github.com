@@ -3,11 +3,11 @@
 # ----------------------- #
 
 url: http://radialglo.github.com
-title: My Octopress Blog
-subtitle: A blogging framework for hackers.
-author: Your Name
+title: Code Dock 
+subtitle: coding adventures
+author: Anthony Su 
 simple_search: http://google.com/search
-description:
+description: radialglo octopress  
 
 # Default date format is "ordinal" (resulting in "July 22nd 2007")
 # You can customize the format as defined in
