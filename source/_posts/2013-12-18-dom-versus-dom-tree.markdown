@@ -106,10 +106,11 @@ Finally some JavaScript to illustrate this!
 
   console.log ("INSPECTING ATTR NODE ...");
   // now let's inspect the attribute node id
-  var id_node = top_bar.getAttributeNode("id");
-  // get it's children
-  // convert array-like NodeList to Array
-  id_node_children = Array.prototype.slice.call(id_node.childNodes);
+  var id_node = top_bar.getAttributeNode("id"),
+      // get it's children
+      // convert array-like NodeList to Array
+      id_node_children = Array.prototype.slice.call(id_node.childNodes);
+
   id_node_children.forEach(function(child) {
       // confirm that id node has child text node
       console.log(child.nodeValue); // "top_bar"
