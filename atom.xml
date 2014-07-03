@@ -1,101 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
 
-<!DOCTYPE html>
-<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
-<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  <title>Code Dock</title>
-  <meta name="author" content="Anthony Su">
-
-  
-  <meta name="description" content="Introduction I recently relaunched my portfolio! My site is currently runs on Amazon EC2
-which is a service that Amazon provides that allows users &hellip;">
-  
-
-  <!-- http://t.co/dKP3o1e -->
-  <meta name="HandheldFriendly" content="True">
-  <meta name="MobileOptimized" content="320">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  
-  <link rel="canonical" href="http://radialglo.github.com">
-  <link href="/favicon.png" rel="icon">
-  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/atom.xml" rel="alternate" title="Code Dock" type="application/atom+xml">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
-<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-
-  
-
-</head>
-
-<body   >
-  <header role="banner"><hgroup>
-  <h1><a href="/">Code Dock</a></h1>
-  
-    <h2>coding adventures</h2>
-  
-</hgroup>
-
-</header>
-  <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-  
-</ul>
-  
-<form action="http://google.com/search" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="q" value="site:radialglo.github.com" />
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
-  
-<ul class="main-navigation">
-  <li><a href="/">Blog</a></li>
-  <li><a href="/blog/archives">Archives</a></li>
-</ul>
-
-</nav>
-  <div id="main">
-    <div id="content">
-      <div class="blog-index">
-  
-  
-  
-    <article>
-      
-  <header>
+  <title><![CDATA[Code Dock]]></title>
+  <link href="http://radialglo.github.com/atom.xml" rel="self"/>
+  <link href="http://radialglo.github.com/"/>
+  <updated>2014-07-03T02:24:35-07:00</updated>
+  <id>http://radialglo.github.com/</id>
+  <author>
+    <name><![CDATA[Anthony Su]]></name>
     
-      <h1 class="entry-title"><a href="/blog/2014/05/24/what-i-learned-from-launching-version-2-of-my-portfolio/">What I Learned From Launching Version 2 of My Portfolio</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
 
   
-
-
-<time datetime="2014-05-24T00:21:00-07:00" pubdate data-updated="true">May 24<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><img src="/images/radialglo-med-grey.png" alt="radialglo version 2" /></p>
+  <entry>
+    <title type="html"><![CDATA[What I learned from launching version 2 of my portfolio]]></title>
+    <link href="http://radialglo.github.com/blog/2014/05/24/what-i-learned-from-launching-version-2-of-my-portfolio/"/>
+    <updated>2014-05-24T00:21:00-07:00</updated>
+    <id>http://radialglo.github.com/blog/2014/05/24/what-i-learned-from-launching-version-2-of-my-portfolio</id>
+    <content type="html"><![CDATA[<p><img src="http://radialglo.github.com/images/radialglo-med-grey.png" alt="radialglo version 2" /></p>
 
 <h3>Introduction</h3>
 
@@ -121,7 +44,7 @@ and attempts to direct each user request to a CDN location that will provide the
 
 <p>Read here for more on <a href="http://philip.greenspun.com/seia/scaling">Scaling Internet Applications</a>.</p>
 
-<p><img src="/images/aeb-architecture_crossaws3.gif" alt="Web Application Hosting Architecture" /></p>
+<p><img src="http://radialglo.github.com/images/aeb-architecture_crossaws3.gif" alt="Web Application Hosting Architecture" /></p>
 
 <p>Amazon&#8217;s <a href="http://docs.aws.amazon.com/gettingstarted/latest/wah-linux/web-app-hosting-intro.html">getting started with AWS</a>
 highlights a sample web application designed in the manner described above.
@@ -144,7 +67,7 @@ after you sign up for AWS.</p>
 
 <h3>Setting up an Amazon EC2 instance</h3>
 
-<p><img src="/images/EC2%20Management%20Console.png" alt="EC2 Management Console" /></p>
+<p><img src="http://radialglo.github.com/images/EC2%20Management%20Console.png" alt="EC2 Management Console" /></p>
 
 <p>After setting up your AWS account, you will need to choose the type of AMI you want to run.</p>
 
@@ -175,7 +98,7 @@ The server also does not contain a GUI(graphical user interface) for security an
 <p>Instance types have  varying CPU, memory, storage, and networking capacity which gives you the flexibility to choose the appropriate mix of resources for your applications
 Since I&#8217;m running low traffic website, I used the t1.micro instance which is part of the <strong>free eligibility tier</strong>.</p>
 
-<p><img src="/images/choose%20an%20instance%20type.png" alt="Choose an Instance Type" /></p>
+<p><img src="http://radialglo.github.com/images/choose%20an%20instance%20type.png" alt="Choose an Instance Type" /></p>
 
 <p>For steps 3 and 4 in the dashboard, I used the default instance and storage configurations.
 I also skipped step 5 for tagging instances, because I am currently running on instance.</p>
@@ -184,8 +107,8 @@ I also skipped step 5 for tagging instances, because I am currently running on i
 
 <p>A security group defines firewall rules for your instances.
 These rules specify which incoming network traffic should be delivered to your instance (e.g., accept web traffic on port 80). All other traffic is ignored. You can modify rules for a group at any time. The new rules are automatically enforced for all running instances. For more information about security groups, go to Using Security Groups in the Amazon Elastic Compute Cloud (Amazon EC2).
-<img src="/images/security%20groups.png" alt="Security Groups" />
-<img src="/images/instance%20page.png" alt="Instance Page" /></p>
+<img src="http://radialglo.github.com/images/security%20groups.png" alt="Security Groups" />
+<img src="http://radialglo.github.com/images/instance%20page.png" alt="Instance Page" /></p>
 
 <h3>Logging into Your EC2 Instance</h3>
 
@@ -373,7 +296,7 @@ good for application delivery including:</p>
 </ul>
 
 
-<p><img src="/images/Citrix_ReverseProxy_101003.jpg" alt="reverse proxy" /></p>
+<p><img src="http://radialglo.github.com/images/Citrix_ReverseProxy_101003.jpg" alt="reverse proxy" /></p>
 
 <p><a href="http://blogs.citrix.com/2010/10/04/reverse-vs-forward-proxy/">Source</a></p>
 
@@ -621,42 +544,15 @@ look to experimenting more with other services provided by AWS such as S3 as wel
 
 
 
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/12/29/attribute-nodes-of-html-elements/">Attribute Nodes of HTML Elements</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-29T04:35:00-08:00" pubdate data-updated="true">Dec 29<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h3>Context</h3>
+  <entry>
+    <title type="html"><![CDATA[Attribute Nodes of HTML Elements]]></title>
+    <link href="http://radialglo.github.com/blog/2013/12/29/attribute-nodes-of-html-elements/"/>
+    <updated>2013-12-29T04:35:00-08:00</updated>
+    <id>http://radialglo.github.com/blog/2013/12/29/attribute-nodes-of-html-elements</id>
+    <content type="html"><![CDATA[<h3>Context</h3>
 
 <p>The following question was asked recently on <a href="http://piazza.com" target="_blank">Piazza</a></p>
 
@@ -933,42 +829,15 @@ Finally let&#8217;s illustrate this through some HTML and JavaScript! Copy paste
 
 
 
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/12/18/dom-versus-dom-tree/">DOM Versus DOM Tree</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-18T20:23:00-08:00" pubdate data-updated="true">Dec 18<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h3>Context</h3>
+  <entry>
+    <title type="html"><![CDATA[DOM versus DOM Tree]]></title>
+    <link href="http://radialglo.github.com/blog/2013/12/18/dom-versus-dom-tree/"/>
+    <updated>2013-12-18T20:23:00-08:00</updated>
+    <id>http://radialglo.github.com/blog/2013/12/18/dom-versus-dom-tree</id>
+    <content type="html"><![CDATA[<h3>Context</h3>
 
 <p>A fellow classmate asked the following question recently on <a href="http://piazza.com" target="_blank">Piazza</a></p>
 
@@ -1149,42 +1018,15 @@ treated as literal text. See also the method setAttribute on the Element interfa
 <p>In DOM4, an Attribute object, no longer extends a node object so it is not considered a node in the DOM(API for documents) for the DOM4 Spec.
 You may also notice that the nodeType ATTRIBUTE_NODE is considered deprecated.
 <a href="https://developer.mozilla.org/en-US/docs/Web/API/Node.nodeType">https://developer.mozilla.org/en-US/docs/Web/API/Node.nodeType</a></p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/04/06/ruby-jumpstart/">Ruby Jumpstart</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-04-06T00:16:00-07:00" pubdate data-updated="true">Apr 6<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p> This posts is an introduction to Ruby and aggregates information I have learned from <a href="http://www.codecademy.com/">Codeacademy</a> and
+  <entry>
+    <title type="html"><![CDATA[Ruby Jumpstart]]></title>
+    <link href="http://radialglo.github.com/blog/2013/04/06/ruby-jumpstart/"/>
+    <updated>2013-04-06T00:16:00-07:00</updated>
+    <id>http://radialglo.github.com/blog/2013/04/06/ruby-jumpstart</id>
+    <content type="html"><![CDATA[<p> This posts is an introduction to Ruby and aggregates information I have learned from <a href="http://www.codecademy.com/">Codeacademy</a> and
  <a href="http://www.amazon.com/Programming-World-Wide-Web-7th/dp/01326658160">Programming the World Wide Web</a> and <a href="http://www.amazon.com/Agile-Web-Development-Rails-Programmers/dp/097669400X">Agile Developement with Rails</a></p>
 
 <p> Please visit <a href="http://www.ruby-lang.org/en/documentation/">here</a> for a full list of documentation and sources on the <a href="http://www.ruby-lang.org/en/">ruby language</a>.
@@ -2368,42 +2210,15 @@ As mentioned previously <strong>only one copy of a symbol exists at a given time
 <h3><a id="modules"></a> Modules</h3>
 
 <h4>TODO</h4>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/03/29/ahoy-octopress/">Ahoy! Octopress</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-29T18:10:00-07:00" pubdate data-updated="true">Mar 29<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Ay mate! I recently decided to start blogging about code with <a href="http://octopress.org">octopress</a> as my blogging engine. This blog will focus on documenting my coding ventures. I&#8217;ve encountered other file based cms(content management systems) such as  <a href="http://getkirby.com">kirby</a> and <a href="http://www.staceyapp.com">stacey</a> (which run on PHP as opposed to Ruby), but ultimately decided to work with octopress because this framework is designed for Jekyll, the blog aware static site generator that powers <a href="pages.github.com">Github Pages</a> (so this site can be hosted on github). As an added bonus working with octopress provides beginners a good opportunity to tinker around in a Ruby environment.</p>
+  <entry>
+    <title type="html"><![CDATA[Ahoy! Octopress]]></title>
+    <link href="http://radialglo.github.com/blog/2013/03/29/ahoy-octopress/"/>
+    <updated>2013-03-29T18:10:00-07:00</updated>
+    <id>http://radialglo.github.com/blog/2013/03/29/ahoy-octopress</id>
+    <content type="html"><![CDATA[<p>Ay mate! I recently decided to start blogging about code with <a href="http://octopress.org">octopress</a> as my blogging engine. This blog will focus on documenting my coding ventures. I&#8217;ve encountered other file based cms(content management systems) such as  <a href="http://getkirby.com">kirby</a> and <a href="http://www.staceyapp.com">stacey</a> (which run on PHP as opposed to Ruby), but ultimately decided to work with octopress because this framework is designed for Jekyll, the blog aware static site generator that powers <a href="pages.github.com">Github Pages</a> (so this site can be hosted on github). As an added bonus working with octopress provides beginners a good opportunity to tinker around in a Ruby environment.</p>
 
 <p>Installing octopress on my local machine Ubuntu 11.10 (Oneiric Ocelot) was met with some setbacks which I resolved as describe below:</p>
 
@@ -2465,84 +2280,7 @@ It turned out that my bundler was installed to a specific gemset and once I inst
 
 
 
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
-</div>
-<aside class="sidebar">
-  
-    <section>
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2014/05/24/what-i-learned-from-launching-version-2-of-my-portfolio/">What I learned from launching version 2 of my portfolio</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/12/29/attribute-nodes-of-html-elements/">Attribute Nodes of HTML Elements</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/12/18/dom-versus-dom-tree/">DOM versus DOM Tree</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/04/06/ruby-jumpstart/">Ruby Jumpstart</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/03/29/ahoy-octopress/">Ahoy! Octopress</a>
-      </li>
-    
-  </ul>
-</section>
-
-
-
-
-
-  
-</aside>
-
-    </div>
-  </div>
-  <footer role="contentinfo"><p>
-  Copyright &copy; 2014 - Anthony Su -
-  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
-</p>
-
-</footer>
-  
-
-
-
-
-
-
-
-  <script type="text/javascript">
-    (function(){
-      var twitterWidgets = document.createElement('script');
-      twitterWidgets.type = 'text/javascript';
-      twitterWidgets.async = true;
-      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
-      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
-    })();
-  </script>
-
-
-
-
-
-</body>
-</html>
+</feed>

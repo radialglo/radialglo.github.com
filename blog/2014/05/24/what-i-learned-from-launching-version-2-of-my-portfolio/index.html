@@ -1,0 +1,737 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>What I learned from launching version 2 of my portfolio - Code Dock</title>
+  <meta name="author" content="Anthony Su">
+
+  
+  <meta name="description" content="Introduction I recently relaunched my portfolio! My site is currently runs on Amazon EC2
+which is a service that Amazon provides that allows users &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://radialglo.github.com/blog/2014/05/24/what-i-learned-from-launching-version-2-of-my-portfolio">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Code Dock" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Code Dock</a></h1>
+  
+    <h2>coding adventures</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:radialglo.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">What I Learned From Launching Version 2 of My Portfolio</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-24T00:21:00-07:00" pubdate data-updated="true">May 24<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="/images/radialglo-med-grey.png" alt="radialglo version 2" /></p>
+
+<h3>Introduction</h3>
+
+<p>I recently relaunched my <a href="http://radialglo.com/">portfolio</a>! My site is currently runs on <a href="http://aws.amazon.com/ec2/">Amazon EC2</a>
+which is a service that Amazon provides that allows users to rent virtual computers to run their own applications.
+The backend of my application runs on <a href="http://expressjs.com/">express</a>, a web application framework for node.
+My client side code is written using <a href="https://github.com/radialglo/guac">Guac</a>, a framework I wrote modeled after jQuery
+after studying its source code. This framework is still under active development.</p>
+
+<p>In this post I will talk about <strong>my NodeJS production environment on Amazon EC2.</strong></p>
+
+<h3>How EC2 fits into Scalable Web Architecture</h3>
+
+<p>Usually when building scalable web architecture, you will have multiple instances
+of your application behind <a href="http://en.wikipedia.org/wiki/Load_balancing_(computing)">load balancers</a>.
+Below the web server/application layer is the <a href="http://en.wikipedia.org/wiki/Persistence_(computer_science)">persistence layer</a> that runs
+a database management system. Finally, since roughly  80-90% of the end-user response time is spent downloading static
+components in the page (<a href="http://www.stevesouders.com/blog/2012/02/10/the-performance-golden-rule/">Performance Golden Rule.</a>),
+a <a href="http://www.nczonline.net/blog/2011/11/29/how-content-delivery-networks-cdns-work/">Content Delivery Network</a> is used to distribute
+static content.  A CDN manages servers in multiple geographically distributed locations,
+stores copies of the videos (and other types of Web content, including documents, images, and audio) in its servers,
+and attempts to direct each user request to a CDN location that will provide the best user experience.</p>
+
+<p>Read here for more on <a href="http://philip.greenspun.com/seia/scaling">Scaling Internet Applications</a>.</p>
+
+<p><img src="/images/aeb-architecture_crossaws3.gif" alt="Web Application Hosting Architecture" /></p>
+
+<p>Amazon&#8217;s <a href="http://docs.aws.amazon.com/gettingstarted/latest/wah-linux/web-app-hosting-intro.html">getting started with AWS</a>
+highlights a sample web application designed in the manner described above.
+From their website:</p>
+
+<blockquote><p>In this diagram, Amazon EC2 instances run the application and web server and belong to an Amazon EC2 Security Group.<br/>The Amazon EC2 Security Group acts as an exterior firewall for the Amazon EC2 instances.<br/>An Auto Scaling group is used to maintain a fleet of Amazon EC2 instances that can handle the presented load.<br/>This Auto Scaling group spans over multiple Availability Zones to protect against potential failures if an Availabilty Zone becomes unavailable.<br/>To ensure that traffic is distributed evenly among the Amazon EC2 instances, an Elastic Load Balancer is associated with the Auto Scaling group.<br/>If the Auto Scaling group launches or terminates instances based on load, then the Elastic Load Balancer will automatically adjust accordingly.<br/>The database tier consists of Amazon RDS database instances, including master and local slave, located in multiple Availability Zones for failover protection.<br/>Amazon RDS provides automated backups to Amazon S3. Amazon S3 stores backups and static content.<br/>Since the consumers of this application may be globally distributed or a large number may visit the site at one time, high volume static content is edge cached using Amazon CloudFront for better performance.<br/>Amazon Route 53 can be used to provide secure and reliable routing to your infrastructure that uses Amazon Web Services.</p></blockquote>
+
+
+<p><em><a href="http://docs.aws.amazon.com/gettingstarted/latest/wah-linux/web-app-hosting-intro.html">Source</a></em></p>
+
+<p>My personal website, <a href="http://radialglo.com">radialglo</a>, operates at a small scale and simply
+use <strong>Amazon EC2</strong> to run my web and application server. Since my site recieves relatively low traffic, I currently don&#8217;t use load balancers,
+and to minimize costs I currently don&#8217;t use a CDN.</p>
+
+<h3>Create AWS account</h3>
+
+<p>If you haven&#8217;t already create an <a href="https://aws.amazon.com/">Amazon Web Services</a> account.
+Please note that there is a <a href="https://aws.amazon.com/free/faqs/">free usage tier</a> for the <strong>first 12 months</strong>
+after you sign up for AWS.</p>
+
+<h3>Setting up an Amazon EC2 instance</h3>
+
+<p><img src="/images/EC2%20Management%20Console.png" alt="EC2 Management Console" /></p>
+
+<p>After setting up your AWS account, you will need to choose the type of AMI you want to run.</p>
+
+<h4>Choose an AMI</h4>
+
+<p>An <strong>AMI</strong> (Amazon Machine Image) is a template that contains the software configuration (operating system, application server, and applications)
+required to launch your instance. You can select an AMI provided by AWS, our user community, or the AWS Marketplace; or you can select one of your own AMIs.</p>
+
+<p>Essentially you choose the type of operating system you want to run, and create an instance of that operating system.
+A similar analogy would be purchasing a <strong>MacBook Air</strong> which is an instance of the <strong>Mac OS X</strong> operating system.
+At the time of the writing I selected <a href="http://releases.ubuntu.com/13.10/"><strong>Ubuntu 13.10 (Saucy Salamander) Server</strong>.</a> as my AMI.</p>
+
+<h4>Difference Between Desktop and Server Images</h4>
+
+<p>The server image is a stripped down version of the desktop image with additional server software such as Apache 2.
+Ths additional software allows other computers/machines to communicate with your server.
+The server also does not contain a GUI(graphical user interface) for security and performance reasons.</p>
+
+<p>More from the <a href="https://help.ubuntu.com/community/ServerFaq#What.27s_the_difference_between_desktop_and_server.3F">ubuntu documentation</a>.</p>
+
+<blockquote><p>1. The first difference is in the CD contents. The &#8220;Server&#8221; CD avoids including what Ubuntu considers desktop packages (packages like X, Gnome or KDE), but does include server related packages (Apache2, Bind9 and so on). Using a Desktop CD with a minimal installation and installing, for example, apache2 from the network, one can obtain the exact same result that can be obtained by inserting the Server CD and installing apache2 from the CD-ROM.</p><p>2. The Ubuntu Server Edition installation process is slightly different from the Desktop Edition. Since by default Ubuntu Server doesn&#8217;t have a GUI, the process is menu driven, very similar to the Alternate CD installation process.</p><p>3. Before 12.04, Ubuntu server installs a server-optimized kernel by default. Since 12.04, there is no difference in kernel between Ubuntu Desktop and Ubuntu Server since linux-image-server is merged into linux-image-generic.</p><p>4. For Ubuntu LTS releases before 12.04, the Ubuntu Desktop Edition only receives 3 years of support. This was increased to 5 years in Ubuntu LTS 12.04 In contrast, all Ubuntu LTS Server Edition releases are supported for 5 years.</p></blockquote>
+
+
+<h3>Choose an Instance Type</h3>
+
+<p>After selecting your AMI, choose an <a href="http://aws.amazon.com/ec2/instance-types/">instance type</a>.</p>
+
+<p>Instance types have  varying CPU, memory, storage, and networking capacity which gives you the flexibility to choose the appropriate mix of resources for your applications
+Since I&#8217;m running low traffic website, I used the t1.micro instance which is part of the <strong>free eligibility tier</strong>.</p>
+
+<p><img src="/images/choose%20an%20instance%20type.png" alt="Choose an Instance Type" /></p>
+
+<p>For steps 3 and 4 in the dashboard, I used the default instance and storage configurations.
+I also skipped step 5 for tagging instances, because I am currently running on instance.</p>
+
+<h3>Security Groups</h3>
+
+<p>A security group defines firewall rules for your instances.
+These rules specify which incoming network traffic should be delivered to your instance (e.g., accept web traffic on port 80). All other traffic is ignored. You can modify rules for a group at any time. The new rules are automatically enforced for all running instances. For more information about security groups, go to Using Security Groups in the Amazon Elastic Compute Cloud (Amazon EC2).
+<img src="/images/security%20groups.png" alt="Security Groups" />
+<img src="/images/instance%20page.png" alt="Instance Page" /></p>
+
+<h3>Logging into Your EC2 Instance</h3>
+
+<p>You must use key-based authentication to login to your Amazon EC2 Instance. This allows you
+to securely access your instance without a password.</p>
+
+<p>You can also import your own key pairs to your Amazon instance. For more refer to <a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html">EC2 Key Pair Documentation</a></p>
+
+<p>On a Linux/Unix instance, the public key content is placed in an entry within <code>~/.ssh/authorized_keys</code>.
+After you have created/downloaded your private key pair you can <a href="https://www.digitalocean.com/community/tutorials/how-to-use-ssh-to-connect-to-a-remote-server-in-ubuntu">ssh</a>
+into your server using that private key <code>ssh -i ~/.ssh/your_private_key remote_user@remote_host</code></p>
+
+<p>I added my EC2 instance to my user <a href="http://www.cyberciti.biz/faq/create-ssh-config-file-on-linux-unix/">ssh configuration</a> file in my local development environment located at <code>~/.ssh/config</code>.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Host awshost
+</span><span class='line'>    HostName 11.111.111.111
+</span><span class='line'>    User bob
+</span><span class='line'>    IdentityFile /Users/bob/.ssh/id_rsa</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now I can simply ssh into my EC2 instance with the command <code>ssh awshost</code>.</p>
+
+<p>You can also add a bash alias <code>~/.bash_aliases</code> for issuing this command. For example:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>alias ssh_server="ssh awshost"</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Port Forwarding</h3>
+
+<p>Before proceeding make sure you that the security group for your instance has been configured to accept HTTP traffic on port 80.</p>
+
+<h4>Why port forward</h4>
+
+<p>Running with superuser privileges (in order to bind the port) may be a security risk to the host, therefore port forwarding is used to redirect a low-numbered port to another high-numbered port, so that application software may execute as a common operating system user with reduced privileges.
+Standard practices say no non-root process gets to talk to the Internet on a port less than 1024.</p>
+
+<h4>Use case for port forwarding</h4>
+
+<p>Express (the web application framework for node) is capable of performing everything that is expected of a modern web server, such as logging requests, HTTPS, serving files and so on.</p>
+
+<p>If you are running a small application it may make sense to have your node application double up as a web and application server.
+This is where port forwarding comes in.
+Because I ran my application as both web and application server, giving root access is not ideal because my application server should not need root permissions.</p>
+
+<p>However, if you are building a large scalable, application you should put a reverse proxy in front of the application server.
+More regarding reverse proxies will be discussed below.</p>
+
+<h4>Enable port forwarding</h4>
+
+<p>The <code>/etc/sysctl.conf</code> file allows you to configure various Linux networking and system settings.</p>
+
+<p>No settings where enabled for my EC2 Instance by default. Running <code>cat /proc/sys/net/ipv4/ip_forward</code> will print 1 if forwarding is enabled.</p>
+
+<p>Now we want to edit <code>/etc/syctl.conf</code> to enabled port forwarding.</p>
+
+<p><code>sudo vim /etc/sysctl.conf</code></p>
+
+<p>In this file, uncomment this line:</p>
+
+<p><code>net.ipv4.ip_forward</code></p>
+
+<p>This will enable ip forwarding. Then, to enable the changes made in sysctl.conf:</p>
+
+<p><code>sudo sysctl -p /etc/sysctl.conf</code> loads the values from the file we just edited.
+Now, let&#8217;s check that ip forwarding is enabled:</p>
+
+<p><code>cat /proc/sys/net/ipv4/ip_forward</code>
+This should print <code>1</code>.</p>
+
+<h4>How to port forward</h4>
+
+<p><a href="http://kentbrewster.com/">Kent Brewster</a> at <a href="http://www.pinterest.com/">Pinterest</a>
+wrote a useful <a href="https://gist.github.com/kentbrew/776580">gist</a> for getting node to talk to port 80.
+Here are the steps I went through.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>// First list out configuration for IP table
+</span><span class='line'>sudo iptables -t nat -L -n -v
+</span><span class='line'>
+</span><span class='line'>// -t nat =&gt; we are modifying the nat(Network Address Translation) table
+</span><span class='line'>// -n =&gt; use numeric output
+</span><span class='line'>// -v =&gt; use verbose to output exact rules
+</span><span class='line'>
+</span><span class='line'>// Output showing no routing options
+</span><span class='line'>Chain PREROUTING (policy ACCEPT 21 packets, 1296 bytes)
+</span><span class='line'>pkts bytes target     prot opt in     out     source               destination
+</span><span class='line'>
+</span><span class='line'>Chain INPUT (policy ACCEPT 21 packets, 1296 bytes)
+</span><span class='line'>pkts bytes target     prot opt in     out     source               destination
+</span><span class='line'>
+</span><span class='line'>Chain OUTPUT (policy ACCEPT 43 packets, 3815 bytes)
+</span><span class='line'>pkts bytes target     prot opt in     out     source               destination
+</span><span class='line'>
+</span><span class='line'>Chain POSTROUTING (policy ACCEPT 43 packets, 3815 bytes)
+</span><span class='line'>pkts bytes target     prot opt in     out     source               destination
+</span><span class='line'>
+</span><span class='line'>// Redirect TCP port 80 to port 3000
+</span><span class='line'>
+</span><span class='line'>sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j  REDIRECT --to-ports 3000
+</span><span class='line'>
+</span><span class='line'>// Output table again to verify that configuration worked
+</span><span class='line'>sudo iptables -t nat -L -n -v
+</span><span class='line'>
+</span><span class='line'>Chain PREROUTING (policy ACCEPT 0 packets, 0 bytes)
+</span><span class='line'>pkts bytes target     prot opt in     out     source               destination
+</span><span class='line'>6   384 REDIRECT   tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:80 redir ports 3000
+</span><span class='line'>
+</span><span class='line'>Chain INPUT (policy ACCEPT 6 packets, 384 bytes)
+</span><span class='line'>pkts bytes target     prot opt in     out     source               destination
+</span><span class='line'>
+</span><span class='line'>Chain OUTPUT (policy ACCEPT 2 packets, 178 bytes)
+</span><span class='line'>pkts bytes target     prot opt in     out     source               destination
+</span><span class='line'>
+</span><span class='line'>Chain POSTROUTING (policy ACCEPT 2 packets, 178 bytes)
+</span><span class='line'>pkts bytes target     prot opt in     out     source               destination
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Reverse Proxy - an alternative to port forwarding</h3>
+
+<p>A <strong>reverse proxy</strong> manages inbound request from  the internet  and manages connections within your servers, where as forward proxies
+filters outbound connections from clients.</p>
+
+<p>More specifically from the <a href="http://httpd.apache.org/docs/2.2/mod/mod_proxy.html">Apache mod_proxy documentation</a>:</p>
+
+<blockquote><p>An ordinary forward proxy is an intermediate server that sits between the client and the origin server. In order to get content from the origin server, the client sends a request to the proxy naming the origin server as the target and the proxy then requests the content from the origin server and returns it to the client. The client must be specially configured to use the forward proxy to access other sites.</p><p>A typical usage of a forward proxy is to provide Internet access to internal clients that are otherwise restricted by a firewall. </p><p>As standard practice in the industry, you should put reverse proxies in front of the application server to load balance and scale the app.</p><p>A reverse proxy (or gateway), by contrast, appears to the client just like an ordinary web server. No special configuration on the client is necessary. The client makes ordinary requests for content in the name-space of the reverse proxy. The reverse proxy then decides where to send those requests, and returns the content as if it was itself the origin.</p></blockquote>
+
+
+<p>According to this <a href="http://blogs.citrix.com/2010/10/04/reverse-vs-forward-proxy/">article</a> written by Citrix,  reverse proxies are also particularly
+good for application delivery including:</p>
+
+<ul>
+<li>Load Balancing (TCP Multiplexing)</li>
+<li>SSL Offload/Acceleration (SSL Multiplexing)</li>
+<li>Caching</li>
+<li>Compression</li>
+<li>Content Switching/Redirection</li>
+<li>Application Firewall</li>
+<li>Server Obfuscation</li>
+<li>Authentication</li>
+<li>Single Sign On</li>
+</ul>
+
+
+<p><img src="/images/Citrix_ReverseProxy_101003.jpg" alt="reverse proxy" /></p>
+
+<p><a href="http://blogs.citrix.com/2010/10/04/reverse-vs-forward-proxy/">Source</a></p>
+
+<p>I currently have not set up a reverse proxy, but am looking into setting one up in the next iteration.</p>
+
+<h3>Setting Up Git for Deployment</h3>
+
+<p>If you need a refresher on <a href="http://en.wikipedia.org/wiki/Git_(software)">Git</a> I would recommend talking a look at <a href="https://www.atlassian.com/git/tutorial/git-basics">Atlassian&#8217;s Git Tutorials</a>
+and the <a href="http://git-scm.com/book">Git book</a>.</p>
+
+<p>My code deployment is adapted from <a href="http://git-scm.com/book/en/Git-on-the-Server-Getting-Git-on-a-Server">Getting Git on a Server</a>
+from the the <a href="http://git-scm.com/book">Git book</a> and <a href="http://toroid.org//ams/git-website-howto">http://toroid.org//ams/git-website-howto</a>.</p>
+
+<p>The gists of my setup is to create a create a <strong>bare</strong> repository for shared users to check in their code and a separate working <strong>directory</strong>( a single checkout of one version of the project )
+that is populated with code from the bare repository via a <strong>post-recieve</strong> hook.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>// On the server, create a new repository to mimic the local one
+</span><span class='line'>git init --bare radialglo.git
+</span><span class='line'>
+</span><span class='line'>// initialize a detached workign directory
+</span><span class='line'>mkdir app
+</span><span class='line'>
+</span><span class='line'>// Create a post-recieve hook, that updates the code in the app, and restarts the app server
+</span><span class='line'>// vim radialglo.git/hooks/post-recieve
+</span><span class='line'>
+</span><span class='line'>#!/bin/bash
+</span><span class='line'>APP_DIR="app"
+</span><span class='line'>// note that our working tree is not in the same directory as our bare repostiory
+</span><span class='line'>git --work-tree=$APP_DIR checkout -f
+</span><span class='line'>cd $APP_DIR
+</span><span class='line'>forever stopall
+</span><span class='line'>// install production dependencies and restart server
+</span><span class='line'>npm i --production && forever start app.js</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Setting up NodeJS</h3>
+
+<p>For more information regarding installing node via package manager refer to documentation <a href="https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager">here</a>.</p>
+
+<p>I installed node on Ubuntu 13.10.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get install nodejs
+</span><span class='line'>
+</span><span class='line'>// verify nodejs works
+</span><span class='line'>nodejs -v // =&gt; v0.10.15
+</span><span class='line'>
+</span><span class='line'>// symlink node to nodejs, /usr/bin/node to /usr/bin/nodejs
+</span><span class='line'>sudo ln -s /usr/bin/nodejs /usr/bin/node
+</span><span class='line'>
+</span><span class='line'>// verify symlink works
+</span><span class='line'>node -v // =&gt; v0.10.15
+</span><span class='line'>
+</span><span class='line'>// install node package manager
+</span><span class='line'>sudo apt-get install npm
+</span><span class='line'>// verify npm works
+</span><span class='line'>npm -v // 1.4.7</span></code></pre></td></tr></table></div></figure>
+
+
+<p><a href="https://www.linkedin.com/">Linkedin</a> wrote a great article for <a href="http://engineering.linkedin.com/nodejs/blazing-fast-nodejs-10-performance-tips-linkedin-mobile">performance tips for NodeJS</a>.</p>
+
+<h4>Setting up Express</h4>
+
+<p>First let&#8217;s install <code>express</code>.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>npm i --save express</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>--save</code> saves meta data regarding your  dependencies (name and version number) into a dependency management file called <code>package.json</code>. Using the flag <code>--save-dev</code> saves the dependencies
+as development  dependencies. The <em>package.json</em> file is really convenient because you don&#8217;t need to save your</p>
+
+<p>A middleware is a JavaScript function to handle HTTP requests to an Express app. It can manipulate the request and the response objects or perform an isolated action, or terminate the request flow by sending a response to the client, or pass on the control to the next middleware
+(from <a href="http://www.amazon.com/Express-Application-Development-Hage-Yaapa-ebook/dp/B00DMYO1TM">Express Web Application Development</a> ).</p>
+
+<p>I am currently using <a href="https://github.com/visionmedia/express/wiki/New-features-in-4.x">Express 4</a> which is quite bare bones
+in comparison to Express 3 because it no longer comes with bundled middleware.</p>
+
+<p>My package.json for development looks like this:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>{
+</span><span class='line'>  "name": "Radialglo",
+</span><span class='line'>  "version": "0.1.0",
+</span><span class='line'>  "author": "asu",
+</span><span class='line'>  "private": true,
+</span><span class='line'>  "devDependencies": {
+</span><span class='line'>    "grunt": "~0.4.1",
+</span><span class='line'>    "grunt-contrib-watch": "*",
+</span><span class='line'>    "grunt-contrib-jshint": "~0.6.3",
+</span><span class='line'>    "grunt-contrib-uglify": "*",
+</span><span class='line'>    "grunt-contrib-cssmin": "*",
+</span><span class='line'>    "grunt-contrib-sass": "*",
+</span><span class='line'>    "grunt-cssc": "*",
+</span><span class='line'>    "grunt-htmlhint": "*",
+</span><span class='line'>    "load-grunt-tasks": "~0.2.0",
+</span><span class='line'>    "grunt-contrib-concat": "~0.4.0",
+</span><span class='line'>    "grunt-shell": "~0.6.4"
+</span><span class='line'>  },
+</span><span class='line'>  "dependencies": {
+</span><span class='line'>    "normalize.css": "~3.0.1",
+</span><span class='line'>    "express": "~4.0.0",
+</span><span class='line'>    "compression": "~1.0.1",
+</span><span class='line'>    "forever": "~0.11.0",
+</span><span class='line'>    "marked": "~0.3.2",
+</span><span class='line'>    "path": "~0.4.9",
+</span><span class='line'>    "jade": "~1.3.1",
+</span><span class='line'>    "body-parser": "~1.0.2"
+</span><span class='line'>  }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Some useful packages include <code>compression</code> and <code>body-parser</code>.</p>
+
+<p>As previously mentioned, Node can also serve as a web server.
+For example, Node serves static content. <code>compress</code> is used to <em>gzip</em> static content before it is
+returned to the user:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>
+</span><span class='line'>var express = require('express'),
+</span><span class='line'>    app = express(),
+</span><span class='line'>    compress = require('compression')(),
+</span><span class='line'>    ...;
+</span><span class='line'>
+</span><span class='line'>// set the maxAge for one day specified in seconds for cache-control
+</span><span class='line'>// From rfc 2616
+</span><span class='line'>// When the max-age cache-control directive is present in a cached response, 
+</span><span class='line'>// the response is stale if its current age is greater than the age value given (in seconds) 
+</span><span class='line'>// at the time of a new request for that resource. The max-age directive on a response implies that
+</span><span class='line'>// the response is cacheable (i.e., "public") unless some other, more restrictive cache directive is also present.
+</span><span class='line'>// http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
+</span><span class='line'>
+</span><span class='line'>app.use(compress);
+</span><span class='line'>
+</span><span class='line'>// expose the static directory
+</span><span class='line'>app.use(express.static(__dirname + '/public', { maxAge: 86400 }));</span></code></pre></td></tr></table></div></figure>
+
+
+<h5>Templating</h5>
+
+<p>To decouple the output representation, I used <a href="http://jade-lang.com/">Jade</a>, a templating language to handle the view.</p>
+
+<p><code>npm --save express</code> to install express.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>// set templating engine for express
+</span><span class='line'>app.set('view engine', 'jade');
+</span><span class='line'>
+</span><span class='line'>// set view directory
+</span><span class='line'>app.set('views', './views');</span></code></pre></td></tr></table></div></figure>
+
+
+<h5>AWS SDK for JavaScript</h5>
+
+<p>Amazon also provides an <a href="http://aws.amazon.com/sdkfornodejs/">AWS Software Development Kit for NodeJS</a>.
+This provides opportunities to build more complex applications.</p>
+
+<p>I learned a lot from developing version 2 of <a href="http://radialglo.com">radiaglo.com</a>, and for next iteration
+look to experimenting more with other services provided by AWS such as S3 as well as configuring servers (nginx in particular).</p>
+
+<!--
+[Managing Multiple Users](http://utkarshsengar.com/2011/01/manage-multiple-accounts-on-1-amazon-ec2-instance/)
+-->
+
+
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Anthony Su</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-24T00:21:00-07:00" pubdate data-updated="true">May 24<span>th</span>, 2014</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://radialglo.github.com/blog/2014/05/24/what-i-learned-from-launching-version-2-of-my-portfolio/" data-via="" data-counturl="http://radialglo.github.com/blog/2014/05/24/what-i-learned-from-launching-version-2-of-my-portfolio/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/12/29/attribute-nodes-of-html-elements/" title="Previous Post: Attribute Nodes of HTML Elements">&laquo; Attribute Nodes of HTML Elements</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/05/24/what-i-learned-from-launching-version-2-of-my-portfolio/">What I learned from launching version 2 of my portfolio</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/29/attribute-nodes-of-html-elements/">Attribute Nodes of HTML Elements</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/18/dom-versus-dom-tree/">DOM versus DOM Tree</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/04/06/ruby-jumpstart/">Ruby Jumpstart</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/29/ahoy-octopress/">Ahoy! Octopress</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Anthony Su -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

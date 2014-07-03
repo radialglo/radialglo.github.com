@@ -1,0 +1,393 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>DOM versus DOM Tree - Code Dock</title>
+  <meta name="author" content="Anthony Su">
+
+  
+  <meta name="description" content="Context A fellow classmate asked the following question recently on Piazza Is the value of a attribute in a element become a node in HTML DOM?e.g. & &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://radialglo.github.com/blog/2013/12/18/dom-versus-dom-tree">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Code Dock" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Code Dock</a></h1>
+  
+    <h2>coding adventures</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:radialglo.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">DOM Versus DOM Tree</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-18T20:23:00-08:00" pubdate data-updated="true">Dec 18<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h3>Context</h3>
+
+<p>A fellow classmate asked the following question recently on <a href="http://piazza.com" target="_blank">Piazza</a></p>
+
+<blockquote><p>Is the value of a attribute in a element become a node in HTML DOM?<br/>e.g. &lt;a href=&quot;good&quot;&gt;&lt;/a&gt; is &#8220;good&#8221; a text node or something else?</p></blockquote>
+
+
+<p>Unfortunately, I was stumped on the question and decided it was time to finally begin reading the DOM specifications also known as <a href="http://www.w3.org/DOM/DOMTR"><strong>DOM TR(Technical Reports)</strong></a> to get a deeper technical understanding of the DOM.</p>
+
+<p>The current specification is <strong>DOM4</strong>. The most up to date version of this spec is available as the  <a href="http://dom.spec.whatwg.org/"><strong>DOM Living Standard</strong></a></p>
+
+<p>One of the things I noticed is that many developers use the term DOM in place of where <strong>DOM Structure Model</strong> or <strong>DOM tree</strong>  should actually be used.
+This distinction between these two terms is  crucial in answering the question.</p>
+
+<h3>Response</h3>
+
+<p>It&#8217;s important to distinguish between
+the <strong>DOM</strong> and the <strong>DOM tree</strong>.</p>
+
+<p><strong>The DOM is a programming API for documents.</strong></p>
+
+<p>According to the spec,
+<em>The Document Object Model (DOM) is an application programming interface (API) for valid HTML and well-formed XML documents.</em><a href="http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407/introduction.html">http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407/introduction.html</a></p>
+
+<p><strong>The DOM tree refers to the structure model of the document(not the DOM).</strong></p>
+
+<p>According to the spec,
+<em>In this specification, we use the term structure model to describe the tree-like representation of a document.
+We also use the term &#8220;tree&#8221; when referring to the arrangement of those information items which can be reached
+by using &#8220;tree-walking&#8221; methods; (this does not include attributes).</em>
+<a href="http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407/introduction.html">http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407/introduction.html</a></p>
+
+<p><strong>In other words, attribute is considered a node in the DOM(API for documents),
+but not a node in the DOM tree(structure of documents).</strong></p>
+
+<p>More specifically from the spec,<em>
+Attr objects inherit the Node interface, but since they are not actually child nodes of the element they describe, the DOM does not consider them part of the document tree. Thus, the Node attributes parentNode, previousSibling, and nextSibling have a null value for Attr objects.</em>
+<a href="http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407/core.html#ID-637646024">http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407/core.html#ID-637646024</a></p>
+
+<p>I did a search for HTML DOM, and none of the technical specifications refer to the any specification as HTML DOM, except
+for W3Schools.Be cautious with the wording of W3Schools <a href="http://www.w3schools.com/js/js_htmldom.asp">http://www.w3schools.com/js/js_htmldom.asp</a>.
+W3Schools is not affiliated with W3C and can occasionally be incorrect with some of these nuances.
+There is a site created by some of the industries leading front end engineers discussing this:
+<a href="http://www.w3fools.com/">http://www.w3fools.com/</a></p>
+
+<p><strong>To answer the question is a text node created for an attribute?, the answer is yes.</strong>
+From the spec,
+<em>On setting(the node value), this creates a Text node with the unparsed contents of the string.
+I.e. any characters that an XML processor would recognize as markup are instead
+treated as literal text. See also the method setAttribute on the Element interface.</em>
+<a href="http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407/core.html#ID-637646024">http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407/core.html#ID-637646024</a></p>
+
+<p>Finally some JavaScript to illustrate this!</p>
+
+<figure class='code'><figcaption><span>DOM versus DOM Tree  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="cp">&lt;!DOCTYPE html&gt;</span>
+</span><span class='line'><span class="nt">&lt;html&gt;</span>
+</span><span class='line'><span class="nt">&lt;body&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;top_bar&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;top_bar_left clearFix&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;top_bar_logo&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
+</span><span class='line'>     <span class="nt">&lt;/div&gt;</span>
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// https://developer.mozilla.org/en-US/docs/Web/API/Node.nodeType</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">NODE_TYPE</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">ELEMENT</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">ATTR</span><span class="o">:</span> <span class="mi">2</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">TEXT</span><span class="o">:</span> <span class="mi">3</span>
+</span><span class='line'>    <span class="c1">// ...</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="p">(</span><span class="s2">&quot;INSPECTING DOM TREE ...&quot;</span><span class="p">);</span>
+</span><span class='line'>      <span class="c1">// top navigation bar in piazza</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">top_bar</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;top_bar&quot;</span><span class="p">),</span>
+</span><span class='line'>      <span class="c1">// get it&#39;s children</span>
+</span><span class='line'>      <span class="c1">// convert array-like NodeList to Array</span>
+</span><span class='line'>      <span class="nx">children</span> <span class="o">=</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">top_bar</span><span class="p">.</span><span class="nx">childNodes</span><span class="p">),</span>
+</span><span class='line'>      <span class="nx">attr_children_count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// iterate all the children of top_bar</span>
+</span><span class='line'>    <span class="nx">children</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">child</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">child</span><span class="p">.</span><span class="nx">nodeType</span> <span class="o">===</span> <span class="nx">NODE_TYPE</span><span class="p">.</span><span class="nx">ATTR</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">attr_children_count</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">child</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// no attribute nodes in DOM tree</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">attr_children_count</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Attributes are not considered children in the DOM tree&quot;</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="p">(</span><span class="s2">&quot;INSPECTING ATTR NODE ...&quot;</span><span class="p">);</span>
+</span><span class='line'>  <span class="c1">// now let&#39;s inspect the attribute node id</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">id_node</span> <span class="o">=</span> <span class="nx">top_bar</span><span class="p">.</span><span class="nx">getAttributeNode</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">),</span>
+</span><span class='line'>      <span class="c1">// get it&#39;s children</span>
+</span><span class='line'>      <span class="c1">// convert array-like NodeList to Array</span>
+</span><span class='line'>      <span class="nx">id_node_children</span> <span class="o">=</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">id_node</span><span class="p">.</span><span class="nx">childNodes</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">id_node_children</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">child</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="c1">// confirm that id node has child text node</span>
+</span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">child</span><span class="p">.</span><span class="nx">nodeValue</span><span class="p">);</span> <span class="c1">// &quot;top_bar&quot;</span>
+</span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">child</span><span class="p">.</span><span class="nx">nodeType</span><span class="p">);</span> <span class="c1">// 3 =&gt; indicates text node</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;/script&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;/body&gt;</span>
+</span><span class='line'><span class="nt">&lt;/html&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Note on DOM4</h3>
+
+<p>In DOM4, an Attribute object, no longer extends a node object so it is not considered a node in the DOM(API for documents) for the DOM4 Spec.
+You may also notice that the nodeType ATTRIBUTE_NODE is considered deprecated.
+<a href="https://developer.mozilla.org/en-US/docs/Web/API/Node.nodeType">https://developer.mozilla.org/en-US/docs/Web/API/Node.nodeType</a></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Anthony Su</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-18T20:23:00-08:00" pubdate data-updated="true">Dec 18<span>th</span>, 2013</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://radialglo.github.com/blog/2013/12/18/dom-versus-dom-tree/" data-via="" data-counturl="http://radialglo.github.com/blog/2013/12/18/dom-versus-dom-tree/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/04/06/ruby-jumpstart/" title="Previous Post: Ruby Jumpstart">&laquo; Ruby Jumpstart</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/12/29/attribute-nodes-of-html-elements/" title="Next Post: Attribute Nodes of HTML Elements">Attribute Nodes of HTML Elements &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/05/24/what-i-learned-from-launching-version-2-of-my-portfolio/">What I learned from launching version 2 of my portfolio</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/29/attribute-nodes-of-html-elements/">Attribute Nodes of HTML Elements</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/18/dom-versus-dom-tree/">DOM versus DOM Tree</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/04/06/ruby-jumpstart/">Ruby Jumpstart</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/29/ahoy-octopress/">Ahoy! Octopress</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Anthony Su -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
