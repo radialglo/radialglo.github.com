@@ -4,7 +4,7 @@
   <title><![CDATA[Code Dock]]></title>
   <link href="http://radialglo.github.com/atom.xml" rel="self"/>
   <link href="http://radialglo.github.com/"/>
-  <updated>2014-08-20T23:40:04-07:00</updated>
+  <updated>2014-08-21T03:44:56-07:00</updated>
   <id>http://radialglo.github.com/</id>
   <author>
     <name><![CDATA[Anthony Su]]></name>
@@ -357,6 +357,8 @@ Use <strong>easeIn</strong> to move something <strong>off</strong> stage</p>
 
 
 <h3>Easings in the Wild</h3>
+
+<p>Next let&#8217;s examine how easing is being used across the web.</p>
 
 <h4>Flickr</h4>
 
