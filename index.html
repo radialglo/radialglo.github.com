@@ -9,8 +9,8 @@
   <meta name="author" content="Anthony Su">
 
   
-  <meta name="description" content="Introduction I recently relaunched my portfolio! My site is currently runs on Amazon EC2
-which is a service that Amazon provides that allows users &hellip;">
+  <meta name="description" content="Recently I&#8217;ve been studying motion and I wanted to write a post regarding what I&#8217;ve learned regarding
+motion and easing. A couple sources &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -32,6 +32,18 @@ which is a service that Amazon provides that allows users &hellip;">
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 
   
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-50887935-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
 
 </head>
 
@@ -66,6 +78,468 @@ which is a service that Amazon provides that allows users &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/08/07/understanding-the-intuition-of-easing/">Understanding the Intuition of Easing</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-08-07T00:34:00-07:00" pubdate data-updated="true">Aug 7<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Recently I&#8217;ve been studying motion and I wanted to write a  post regarding what I&#8217;ve learned regarding
+motion and easing.</p>
+
+<p>A couple sources I have been reading include <a href="http://www.google.com/design/spec/animation/authentic-motion.html">Google Design Guidelines regarding motion</a>
+and <a href="http://rachsmith.com/">Rachel Smith&#8217;s</a> <a href="http://codepen.io/rachsmith/blog/lets-talk-about-ease-please">post about easing</a>.
+<a href="http://en.wikipedia.org/wiki/12_basic_principles_of_animation">12 Principles of Animation</a>
+If you want learn more about the mechanics for easing, <a href="http://www.robertpenner.com/">Robert Penner</a>, the creator of the easing functions, provides
+a good <a href="http://www.robertpenner.com/easing/">set of resources on his site</a>.</p>
+
+<p>Some of the keypoints to take away from both posts include</p>
+
+<ol>
+<li><strong>Physical objects</strong> have mass and <strong>move only when forces are applied</strong> to them. Consequently, objects can’t start or stop instantaneously. Animation with abrupt starts and stops or rapid changes in direction appears unnatural and can be an unexpected and unpleasant disruption for the user.</li>
+<li><strong>Motion with swift acceleration and gentle deceleration feels natural and delightful</strong>.</li>
+<li><strong>Enter and exit frame at peak velocity</strong>. This behavior emulates natural movement: a person entering the frame of vision does not begin walking at the edge of the frame but well before it.
+  Easing in when entering and slowing down when exiting draw the user&#8217;s attention to that motion, which, in most cases, isn&#8217;t the effect you want.
+  Likewise
+
+<ul>
+<li>Use <strong>ease-out</strong> to move something <strong>onto</strong> the stage</li>
+<li>Use <strong>ease-in</strong> to move something <strong>off</strong> stage</li>
+<li>Use <strong>ease-in-out</strong> to move <strong>something</strong> across the stage (from one point to another)</li>
+</ul>
+</li>
+<li><strong>Account for mass.</strong> Lighter/smaller objects may accelerate or decelerate faster, because they have less mass and require less force to do so. Larger/heavier objects may need more time to reach peak speed and come to rest.</li>
+</ol>
+
+
+<h3>What is easing</h3>
+
+<p><strong>Easing</strong> comes into play because it used to model how <strong>position changes with time</strong>.
+<a href="http://www.robertpenner.com/">Robert Penner</a> created a set of <a href="http://www.robertpenner.com/easing/">easing functions</a> to model these positional changes.</p>
+
+<h3>How to interpret easing graphs</h3>
+
+<p>There is quite a selection of easing functions to choose from, so how do you choose which one works best for you?
+Luckily, these easing functions have been visualized as <a href="http://easings.net/">position vs. time graphs</a>, so understanding how to interpret these
+graphs is crucial for selecting the right easing. You can also <a href="http://5013.es/toys/tween.audio/">&#8220;listen&#8221;</a> to these easings.<code>Position is the y axis (vertical)</code> and <code>time is the x axis (horizontal)</code>.
+For the most part, each axis is bound between 0 and 1 (representing 0 to 100% of position or time),
+but as we&#8217;ll see position of easings such as <strong>easeOutBack</strong> can exceed 1 and <strong>easeInBack</strong> can go below 0.
+You can also think of the bounds of the y and x axes representing start/end position and start/end time respectively.</p>
+
+<!--
+    Physics refresher
+-->
+
+
+<p>As a <a href="http://www.physicsclassroom.com/class/1DKin/Lesson-1/Speed-and-Velocity">physics refresher</a>,
+<code>change in position = displacement = (position2 - position1)</code>and <code>average velocity = displacement / time</code>.
+Looking at a position vs. time graph, we can <strong>interpret a line or curve as a set of points</strong>. Each point represents a position.
+If you take the <strong>slope</strong> between the two points <code>(position2 - position1) / (time2 - time1)</code> then you get the <code>velocity</code> within that time frame.
+It also important to remember that <strong>velocity is a vector quantity</strong> meaning that it represents
+both a <strong>value and direction</strong> (how fast and in which direction), whereas speed is a scalar quantity only representing a value (how fast). So <code>negative velocity</code>
+represents the same speed of an equivalent positive velocity but in the opposite direction.</p>
+
+<p>Finally, if you take the <strong>slope of the velocity graph</strong>, <code>(velocity2 - velocity1) / (time2 - time1)</code> then you get the <code>acceleration</code>.
+In other words, <strong>acceleration tells you whether or not the object speeds up or slows down with time and in which direction</strong>.
+An acceleration of 0, means that velocity was constant.</p>
+
+<p>The follow graph from <a href="http://hyperphysics.phy-astr.gsu.edu/hbase/mechanics/motgraph.html">here</a>
+as displayed below visualizes these concepts well.</p>
+
+<p><img src="/images/motslope.gif" alt="Velocity and Acceleration" /></p>
+
+<p><a href="http://hyperphysics.phy-astr.gsu.edu/hbase/mechanics/motgraph.html">Source: Hyperphysics</a></p>
+
+<p>There are <strong> 4 basic easing functions </strong>:<br/>
+1. linear<br/>
+2. ease-in<br/>
+3. ease-out<br/>
+4. ease-in-out</p>
+
+<p>Below we&#8217;ll look at how to interpret these graphs.
+I would also recommend playing with this
+<a href="http://gilmoreorless.github.io/sydjs-preso-easing/#how-it-works-demo">easing visualization</a>
+created by <a href="https://github.com/gilmoreorless">Gilmore Davidson</a> which is where the
+following images are adapted from.</p>
+
+<h4>Linear</h4>
+
+<p><img src="/images/linear-easing.png" alt="Linear Easing" /></p>
+
+<p>The slope of this graph is a constant value, because the line is straight.
+A constant velocity means that there is no acceleration.</p>
+
+<h4>Ease-In</h4>
+
+<p><img src="/images/ease-in.png" alt="Ease In" /></p>
+
+<p>The slope of this graph gets steeper over time meaning that the velocity increases over time.
+In other words, the object <strong>starts out slow and accelerates over time</strong>.</p>
+
+<h4>Ease-Out</h4>
+
+<p><img src="/images/ease-out.png" alt="Ease Out" /></p>
+
+<p>This graph behaves in the opposite manner of an ease-in graph.
+The slope of this graph gets flatter over time meaning that the velocity decreases over time.
+In other words, the object <strong>starts out fast and decelerates over time</strong>.</p>
+
+<h4>Ease-In-Out</h4>
+
+<p><img src="/images/ease-in-out.png" alt="Ease In-Out" /></p>
+
+<p>This graph is a combination of an ease-in and ease-out graph.
+Looking at the slope, we see that initially the object starts out slow and accelerates over time before hitting a peak velocity,
+followed by a gradual deceleration before stopping.</p>
+
+<h3>Different Degrees of Easing</h3>
+
+<p>These &#8220;standard&#8221; easing classes model position as a <a href="http://en.wikipedia.org/wiki/Power_function">power function</a> of <code>time t</code>
+raised to some power: Linear - 1, Quad(ratic) - 2, Cubic - 3, Quart(ic) - 4, Quint(ic) - 5.</p>
+
+<p>We&#8217;ll look at these different degrees of easing by examining the <strong>easeIn</strong> curve.
+Recall that bounds for time between 0 and 1 and that decimal values yield smaller values
+when raised to increased powers.</p>
+
+<p><img src="/images/degrees-of-easing.png" alt="Degrees of Easing" /></p>
+
+<pre><code>Let t = 0.8
+    t^2 = 0.64
+    t^3 = 0.512
+    t^4 = 0.4096
+    t^5 = 0.32768
+</code></pre>
+
+<p>Since <strong>decimal values yield smaller results decrease with increased power</strong>,
+this means that increasing powers exaggerates the easing effect.
+In particular for <strong>easeIn</strong> easings, the object remains slower for a longer time and
+accelerates faster when it finally speeds up.</p>
+
+<h4>Linear</h4>
+
+<p>Power of 1. Uses Constant Velocity.</p>
+
+<h4>Quad</h4>
+
+<p>Power of 2. Interesting tidbit to distinguish <strong>Quad</strong> from <strong>Quart</strong>: Although the prefix quad means four, quad originally referred to the four sides of a square.
+Therefore a <strong>squared</strong> variable is a quadratic.</p>
+
+<h4>Cubic</h4>
+
+<p>Power of 3.</p>
+
+<h4>Quart</h4>
+
+<p>Power of 4.</p>
+
+<h4>Quint</h4>
+
+<p>Power of 5.</p>
+
+<h3>Other Easings</h3>
+
+<h4>Sinusoidal Easing</h4>
+
+<p><img src="/images/sine-easing.png" alt="sinEasing" /></p>
+
+<p>The position is a function of a sin: <code>p(t) = sin(t * π/2)</code>.
+Sinusoidal easing is quite gentle, even more so than quadratic easing.
+Its path doesn’t have a lot of curvature. Much of the
+curve resembles a straight line angled at 45 degrees, with just a bit of a
+curve to it.</p>
+
+<h4>Exponential Easing</h4>
+
+<p>Recall that for an exponential function such as <a href="http://en.wikipedia.org/wiki/Exponential_growth">exponential growth</a>,
+<strong>time t is an exponent</strong> 2<sup>t,</sup> whereas in power functions time is a value raised to a constant value for example t<sup>2.</sup>
+Generally exponential functions grow faster than power functions and are therefore more exaggerated.</p>
+
+<p><img src="/images/expo-easing.png" alt="exponentialEasing" /></p>
+
+<h5>History of Exponential Easing</h5>
+
+<p>The Exponential Easing is based off what Robert Penner calls the <strong>standard exponential slide</strong>,
+that was used often used in ActionScript, a dialect of ECMAScript used for Flash.</p>
+
+<pre><code>// a standard exponential slide
+this.onEnterFrame = function () {
+var distance = this.destinationX - this._x;
+    this._x += distance / 2;
+};
+</code></pre>
+
+<p>The idea is simply that you
+move a fraction of the distance—say one-half—to your destination in each
+unit of time. For instance, if you need to move a total of 10 feet, you could
+move 5 feet, then 2.5 feet, then 1.25, then .625, and so on.</p>
+
+<p>Notice that this is a <a href="http://en.wikipedia.org/wiki/Geometric_series">Geometric Series</a>,
+which is a sum of a sequence of terms where there is a constant ratio between successive terms.
+The sum of a Geometric series is <code>c / (1 - r)</code>, where <strong>c is  constant multiplied to each term</strong> and <strong>r is the ratio between each term</strong>
+We can verify the above example: 10 = 5 / (1 - 1/2) where <strong>c = 5 and r = 1 / 2</strong>.</p>
+
+<h4>Circular Easing</h4>
+
+<p><img src="/images/circ-easing.png" alt="Circ Easing" /></p>
+
+<p>The position is a based of the equation for a half circle: <code>p(t) = 1 - sqrt(1 - t^2)</code>.
+This equation is derive from the equation of a <a href="http://en.wikipedia.org/wiki/Unit_circle">unit circle</a> <code>x^2 + y^2 = 1</code>
+Solving for <code>y</code>, we get that the upper half of the circle is <code>y = sqrt(1 - x^2)</code>.
+Likewise the lower half of the circle is <code>y = -sqrt(1 - x^2)</code>, because negating the equation flips
+the graph vertically (over the y axis).
+Finally we add 1 to the equation so that the unit circle is shifted up to top <code>y = (-sqrt(1 - x^2)) + 1</code>,
+Since the bounds of <code>time &gt; 0</code> our graph is a quarter circle residing in the top right quadrant.
+This can be rewritten as <code>y(x) = 1 - sqrt(1 - x^2)</code>.</p>
+
+<p>Similar to quintic and exponential easing, the accleration for circular easing is dramatic, but it also happens
+more <strong>suddenly</strong>.
+Since the circle exhibits more curvature, we see a greater range of velocity as well as sharper changes towards the
+beginning of easeInCirc and at the end of easeOutCirc.</p>
+
+<p>The following diagram displays all easings mentioned so far in juxtaposition,
+ordered by roughly increasing curvature/acceleration.</p>
+
+<p><img src="/images/standard-easings.png" alt="Standard Easings" /></p>
+
+<h3>Special Effect Easings</h3>
+
+<p>More complex curves have been modeled to create special effects.</p>
+
+<h4>Back</h4>
+
+<p>This easing exceeds the start or end position for easeIn and easeOut respectively, before springing back into place.
+The easing displayed below is <strong>easeOutBack</strong>.</p>
+
+<p><img src="/images/easeOutBack.png" alt="easeOutBack" /></p>
+
+<p data-height="268" data-theme-id="0" data-slug-hash="pFzlJ" data-default-tab="result" class='codepen'>See the Pen <a href='http://codepen.io/radialglo/pen/pFzlJ/'>easeOutBack</a> by Anthony Su (<a href='http://codepen.io/radialglo'>@radialglo</a>) on <a href='http://codepen.io'>CodePen</a>.</p>
+
+
+<h4>Elastic</h4>
+
+<p>This easing <strong>oscillates</strong> around the  start or end position for easeIn and easeOut respectively.</p>
+
+<p><img src="/images/easeOutElastic.png" alt="easeOutElastic" /></p>
+
+<p data-height="268" data-theme-id="0" data-slug-hash="tnCJi" data-default-tab="result" class='codepen'>See the Pen <a href='http://codepen.io/radialglo/pen/tnCJi/'>easeOutElastic</a> by Anthony Su (<a href='http://codepen.io/radialglo'>@radialglo</a>) on <a href='http://codepen.io'>CodePen</a>.</p>
+
+
+<h4>Bounce</h4>
+
+<p>The start and end position form boundaries for easeIn and easeOut respectively, whereupon the object bounces.</p>
+
+<p><img src="/images/easeOutBounce.png" alt="easeOutBounce" /></p>
+
+<p data-height="268" data-theme-id="0" data-slug-hash="HspKu" data-default-tab="result" class='codepen'>See the Pen <a href='http://codepen.io/radialglo/pen/HspKu/'>easeOutBounce</a> by Anthony Su (<a href='http://codepen.io/radialglo'>@radialglo</a>) on <a href='http://codepen.io'>CodePen</a>.</p>
+
+
+<h3>CSS Easing</h3>
+
+<p>Although Robert Penner&#8217;s equations were written originally as functions, many of these functions
+can also be used in CSS3 using the <strong>cubic-bezier</strong> <a href="http://www.w3.org/TR/css3-transitions/#transition-timing-function">transition timing function</a>.
+These functions have been approximated as cubic <a href="http://en.wikipedia.org/wiki/B%C3%A9zier_curve">bezier curves</a> by <a href="http://matthewlein.com/">Matthew Lein</a>.
+For more on bezier curves read this <a href="http://en.wikipedia.org/wiki/B%C3%A9zier_curve">article</a>.
+Here is a <a href="http://www.jasondavies.com/animated-bezier/">bezier curve simulation from Jason Davies</a>
+and <a href="http://tholman.com/bezier-curve-simulation/">another one by Tim Holman</a>.</p>
+
+<p>A limitation of using cubic bezier curves is that <strong>cubic bezier curves contain at most one peak and one valley</strong>.
+So if you want to use an easing that has more than one peak/trough, such as <strong>easeInElastic or easeInOutBounce</strong>
+then you must use a JavaScript or some other programmatic implementation of easing.</p>
+
+<!--
+    Cubic Bezier Curve: Third order bezier curve
+    http://www.jasondavies.com/animated-bezier/
+    http://tholman.com/bezier-curve-simulation/
+    Cubic bezier can have only one peak and one trough
+-->
+
+
+<h3>How to apply easings</h3>
+
+<p>Generally speaking, <strong>linear motion is often mechanical rather than natural</strong>.
+You want to conform to the natural laws of motion so that your animation is believable.</p>
+
+<p>However this does not mean you should completely ignore linear easings
+even if your not animating mechanical objects.
+Easings don&#8217;t neccesarily need be model <strong>physical position</strong>, but can really
+used to model any kind of one dimensional value such as <strong>opacity</strong>.
+Similarly some applications of linear easing can be used for creating
+camera effects like <strong>zooming</strong> or <strong>panning</strong> when creating a <strong>timelapse</strong>
+or the <a href="http://en.wikipedia.org/wiki/Ken_Burns_effect"><strong>Ken Burns Effect</strong></a>
+for creating videos with still imagery.</p>
+
+<p>Naturally, your eye will be able to <strong>discern something moving at a slower speed
+than something moving at a higher speed</strong>. It&#8217;s no coincidence that slow motion scenes
+in action movies also tend to be the most interesting.
+As such, enter and exit the stage at peak velocity. Entering and exiting the stage
+are less important in comparison to when the object finally halts on stage or
+begins to leave the stage, respectively.</p>
+
+<!--
+    Linear Animation Examples
+    Linear Easing:
+    Time Lapse
+    Ken Burns Effect
+-->
+
+
+<h4>Car example</h4>
+
+<p>We&#8217;ll be animating a car to understand how to apply easing.</p>
+
+<h5>EaseInOut</h5>
+
+<p>Initially your car starts out <strong>parked</strong>. When you start your car,
+you need to push on the pedal to <strong>accelerate</strong> to a comfortable cruising speed
+and finally when you are stopping at stop light you <strong>gently decelerate</strong>
+so that the ride is comfortable for your passengers.</p>
+
+<p>If you were to witness the full start and stop action of the car you
+would see an <strong>easeInOut</strong> easing.
+Use <strong>easeInOut</strong> to move something <strong>across</strong> the stage (from one point to another).</p>
+
+<p data-height="268" data-theme-id="0" data-slug-hash="Hnlod" data-default-tab="result" class='codepen'>See the Pen <a href='http://codepen.io/radialglo/pen/Hnlod/'>Car driving across stage</a> by Anthony Su (<a href='http://codepen.io/radialglo'>@radialglo</a>) on <a href='http://codepen.io'>CodePen</a>.</p>
+
+
+<h5>EaseOut</h5>
+
+<p>Let&#8217;s say you were to see a friend arrive at your house for an evening party.
+By the time your friend reaches your house he/she will already be traveling
+at peak velocity and will <strong>gently decelerate</strong> before parking in front of your house.
+Use <strong>easeOut</strong> to move something <strong>onto</strong> the stage</p>
+
+<p data-height="268" data-theme-id="0" data-slug-hash="FpLHn" data-default-tab="result" class='codepen'>See the Pen <a href='http://codepen.io/radialglo/pen/FpLHn/'>Car driving onto stage</a> by Anthony Su (<a href='http://codepen.io/radialglo'>@radialglo</a>) on <a href='http://codepen.io'>CodePen</a>.</p>
+
+
+<h5>EaseIn</h5>
+
+<p>After the party, you say goodbye to your friend and watch as his/her car leaves
+your neighborhood. Your friend needs to start the parked car
+and accelerate to reach a comfortable crusing speed.
+By the time the car leaves your field of vision it will be traveling at peak velocity.
+Use <strong>easeIn</strong> to move something <strong>off</strong> stage</p>
+
+<p data-height="268" data-theme-id="0" data-slug-hash="tDqbr" data-default-tab="result" class='codepen'>See the Pen <a href='http://codepen.io/radialglo/pen/tDqbr/'>Car backing off stage</a> by Anthony Su (<a href='http://codepen.io/radialglo'>@radialglo</a>) on <a href='http://codepen.io'>CodePen</a>.</p>
+
+
+<h3>Easings in the Wild</h3>
+
+<h4>Flickr</h4>
+
+<p><img src="/images/flickr-click.gif" alt="Flickr Click" />
+<img src="/images/flickr-scroll.gif" alt="Flickr Scroll" />
+<img src="/images/flickr-click-scroll.gif" alt="Flickr Click Scroll" />
+<img src="/images/flickr-interrupt-click.gif" alt="Flickr Interrupt Click" />
+<img src="/images/flickr-far-click.gif" alt="Flickr Far Click" /></p>
+
+<h4>Google Glass</h4>
+
+<!--
+.fade-out
+.5s opacity ease
+
+cubic-bezier(.77,0,.175,1)
+-->
+
+
+<p><img src="/images/glass-click.gif" alt="Glass Click" />
+<img src="/images/glass-far-click.gif" alt="Glass Far Click" /></p>
+
+<!--
+cubic-bezier(0.325, 0, 0.000, 1.650);
+-->
+
+
+<h4>Paul Stamatiou</h4>
+
+<p><img src="/images/stamatiou-nav.gif" alt="Stamatious Nav" />
+<img src="/images/radialReact-nav.gif" alt="Radial React" /></p>
+
+<h3>Tools</h3>
+
+<p>Some <strong>tools</strong> I would recommend to further explore easing are:</p>
+
+<ul>
+<li><a href="http://easings.net/">easings.net</a>
+  <img src="/images/easings.png" alt="easings.net" />
+
+<ul>
+<li>provides a visual holistic overview of easing functions as well as methods to performing the easing in JavaScript and CSS.</li>
+</ul>
+</li>
+<li><a href="http://cubic-bezier.com/#.17,.67,.83,.67">cubic-bezier.com</a>
+  <img src="/images/cubic-bezier.png" alt="cubic-bezier.com" />
+
+<ul>
+<li>CSS easing tool created by <a href="http://lea.verou.me/">Lea Verou</a> to preview and compare various easings in CSS. This tool
+also lets you create your own custom easings.</li>
+<li>This tool also allows one to share various easings as a url by specifying the parameters as a fragment like so
+<a href="http://cubic-bezier.com/#.17,.67,.83,.67">http://cubic-bezier.com/#.17,.67,.83,.67</a></li>
+</ul>
+</li>
+<li><a href="http://matthewlein.com/ceaser/">Ceaser</a><br/>
+  <img src="/images/ceaser.png" alt="Ceaser" />
+
+<ul>
+<li>Another CSS easing tool created by <a href="http://matthewlein.com/">Matthew Lein</a>.</li>
+<li>Unlike cubic-bezier(mentioned above):
+
+<ul>
+<li>Has <strong>finer granularity</strong>
+
+<ul>
+<li>Rounds to <strong>thousandths place</strong> whereas <a href="http://cubic-bezier.com/">cubic-bezier.com</a> rounds to <strong>hundredths place</strong></li>
+<li>For example representing <a href="http://cubic-bezier.com/#.25,.25,.39,1.37">http://cubic-bezier.com/#0.250,0.250,0.390,1.365</a>
+gets approximated as <a href="http://cubic-bezier.com/#.25,.25,.39,1.37">http://cubic-bezier.com/#.25,.25,.39,1.37</a></li>
+</ul>
+</li>
+<li>No side-by-side comparisons</li>
+<li>In addition to animating position, the tools also allows you to animate width, height, and opacity.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<!--
+    Easing has been approximated with Cubic Bezier Curves
+-->
+
+
+
+
+<script async src="//codepen.io/assets/embed/ei.js"></script>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -2485,6 +2959,10 @@ It turned out that my bundler was installed to a specific gemset and once I inst
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/08/07/understanding-the-intuition-of-easing/">Understanding the Intuition of Easing</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/05/24/what-i-learned-from-launching-version-2-of-my-portfolio/">What I learned from launching version 2 of my portfolio</a>
       </li>
     
@@ -2498,10 +2976,6 @@ It turned out that my bundler was installed to a specific gemset and once I inst
     
       <li class="post">
         <a href="/blog/2013/04/06/ruby-jumpstart/">Ruby Jumpstart</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/03/29/ahoy-octopress/">Ahoy! Octopress</a>
       </li>
     
   </ul>
