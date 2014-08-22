@@ -135,10 +135,42 @@ a good <a href="http://www.robertpenner.com/easing/">set of resources on his sit
 </ol>
 
 
+<h2>Motion and Tweening</h2>
+
+<p>In filmaking, movies or motion pictures can be thought of  as a series of still images or <strong>frames</strong> that
+compose a complete <strong>moving picture</strong>.</p>
+
+<p>Likewise in traditional animation, animators would either draw out every single frame
+of an animation from start to end with the <strong>straight ahead technique</strong> or draw <strong>keyframes (important
+frames of a sequence)</strong> and then generate <strong>intermediate frames</strong> between
+the keyframes known as <strong>inbetweens</strong>. The process of generating intermediate frames
+between keyframes is also known as <strong>tweening</strong> or interpolating and the resulting sequence of frames
+is known as a <strong>tween</strong>.</p>
+
+<p><img src="/images/straight-ahead-pose.jpg" alt="Straight Ahead Pose to Pose" /></p>
+
+<p><em>The top illustrates a straight-ahead technique, while the bottom represents
+the keyframes that will be used from pose-to-pose animation</em></p>
+
+<p><a href="http://www.smashingmagazine.com/2012/10/30/motion-and-animation-a-new-mobile-ux-design-material/">Source: Smashing Magazine</a></p>
+
+<p>From a programmatic perspective, <strong>motion</strong> is simply <strong>the numerical
+change of position with time</strong>.</p>
+
 <h2>What is easing</h2>
 
 <p><strong>Easing</strong> comes into play because it used to model how <strong>position changes with time</strong>.
-<a href="http://www.robertpenner.com/">Robert Penner</a> created a set of <a href="http://www.robertpenner.com/easing/">easing functions</a> to model these positional changes.</p>
+<a href="http://www.robertpenner.com/">Robert Penner</a> created a set of <a href="http://www.robertpenner.com/easing/">easing functions</a> to model these positional changes.
+Easings are applied to <strong>tweens</strong> to specify the speed at which the animation progresses
+at different points within the tween.</p>
+
+<h3>Note on position</h3>
+
+<p>As Robert Penner <a href="http://www.robertpenner.com/easing/penner_chapter7_tweening.pdf">notes</a>,
+<strong>position</strong> doesn&#8217;t have be a physical position but can be any one dimensional value
+such as <strong>opacity</strong>. Of course you can animate two- and three-dimensional motion
+such as area and volume, but these animation are broken down into several
+one-dimensional values.</p>
 
 <h2>How to interpret easing graphs</h2>
 
