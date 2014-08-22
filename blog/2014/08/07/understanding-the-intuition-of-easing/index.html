@@ -9,8 +9,8 @@
   <meta name="author" content="Anthony Su">
 
   
-  <meta name="description" content="Recently I&#8217;ve been studying motion and I wanted to write a post regarding what I&#8217;ve learned regarding
-motion and easing. A couple sources &hellip;">
+  <meta name="description" content="Introduction Recently I&#8217;ve been studying motion and I wanted to write a post regarding what I&#8217;ve learned primarily regarding
+easing. I &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -104,16 +104,42 @@ motion and easing. A couple sources &hellip;">
   </header>
 
 
-<div class="entry-content"><p>Recently I&#8217;ve been studying motion and I wanted to write a  post regarding what I&#8217;ve learned regarding
-motion and easing.</p>
+<div class="entry-content"><h2>Introduction</h2>
 
-<p>A couple sources I have been reading include <a href="http://www.google.com/design/spec/animation/authentic-motion.html">Google Design Guidelines regarding motion</a>
-and <a href="http://rachsmith.com/">Rachel Smith&#8217;s</a> <a href="http://codepen.io/rachsmith/blog/lets-talk-about-ease-please">post about easing</a>.
-<a href="http://en.wikipedia.org/wiki/12_basic_principles_of_animation">12 Principles of Animation</a>
-If you want learn more about the mechanics for easing, <a href="http://www.robertpenner.com/">Robert Penner</a>, the creator of the easing functions, provides
-a good <a href="http://www.robertpenner.com/easing/">set of resources on his site</a>.</p>
+<p>Recently I&#8217;ve been studying motion and I wanted to write a  post regarding what I&#8217;ve learned primarily regarding
+easing.</p>
 
-<p>Some of the keypoints to take away from both posts include</p>
+<p>I stumbled upon <a href="http://rachsmith.com/">Rachel Smith&#8217;s</a> <a href="http://codepen.io/rachsmith/blog/lets-talk-about-ease-please">beginner post on easing</a>,
+a couple weeks ago which was really eye-opening.
+Starting out, these tips were really helpful and spurred more research
+on the mechanics and principles of easing.</p>
+
+<p>Some additional resources I would recommend reading are</p>
+
+<ul>
+<li><p><a href="http://en.wikipedia.org/wiki/12_basic_principles_of_animation">12 Principles of Animation</a></p>
+
+<ul>
+<li>Animation principles written by  Disney animators Ollie Johnston and Frank Thomas</li>
+</ul>
+</li>
+<li><p><a href="http://www.robertpenner.com/easing/penner_chapter7_tweening.pdf">Robert Penner&#8217;s Chapter on Tweening</a></p>
+
+<ul>
+<li>If you want learn more about the mechanics for easing, <a href="http://www.robertpenner.com/">Robert Penner</a>, the creator of the easing functions, provides
+a good <a href="http://www.robertpenner.com/easing/">set of resources on his site</a>.</li>
+</ul>
+</li>
+<li><p><a href="http://www.google.com/design/spec/animation/authentic-motion.html">Google Design Guidelines regarding motion</a></p>
+
+<ul>
+<li>Google&#8217;s comprehensive guide for visual, motion, and interaction design across platforms and devices.</li>
+</ul>
+</li>
+</ul>
+
+
+<p>Some of the key points to take away from these posts regarding motion in general include</p>
 
 <ol>
 <li><strong>Physical objects</strong> have mass and <strong>move only when forces are applied</strong> to them. Consequently, objects can’t start or stop instantaneously. Animation with abrupt starts and stops or rapid changes in direction appears unnatural and can be an unexpected and unpleasant disruption for the user.</li>
@@ -129,6 +155,24 @@ a good <a href="http://www.robertpenner.com/easing/">set of resources on his sit
 </ul>
 </li>
 <li><strong>Account for mass.</strong> Lighter/smaller objects may accelerate or decelerate faster, because they have less mass and require less force to do so. Larger/heavier objects may need more time to reach peak speed and come to rest.</li>
+</ol>
+
+
+<p>There are already lots of posts around the web
+teaching you how to implement <a href="http://blog.alexmaccaw.com/css-transitions">CSS transitions</a> and
+<a href="http://gsgd.co.uk/sandbox/jquery/easing/">use jQuery Easings</a> as well
+as <a href="http://easings.net/">tools</a> to <a href="http://matthewlein.com/ceaser/">select</a>
+and <a href="http://cubic-bezier.com/#.17,.67,.83,.67">create</a> your own easings.</p>
+
+<p>The purpose of this post is to develop an intuition of easing by:</p>
+
+<ol>
+<li><strong>develop an understanding of what easings are and the relationship between
+different <a href="http://easings.net/">easings</a></strong></li>
+<li><strong>learn how to select/apply easings</strong></li>
+<li><strong>examine real world application of easings</strong>
+such as <a href="https://www.flickr.com/">Flickr&#8217;s website</a>
+and <a href="http://www.google.com/glass/start/">Google Glass&#8217; website</a>.</li>
 </ol>
 
 
@@ -218,12 +262,16 @@ following images are adapted from.</p>
 
 <p><img src="/images/linear-easing.png" alt="Linear Easing" /></p>
 
+<p><a href="http://gilmoreorless.github.io/sydjs-preso-easing/#how-it-works-demo">Source: SydJS Easing Presentation</a></p>
+
 <p>The slope of this graph is a constant value, because the line is straight.
 A constant velocity means that there is no acceleration.</p>
 
 <h3>Ease-In</h3>
 
 <p><img src="/images/ease-in.png" alt="Ease In" /></p>
+
+<p><a href="http://gilmoreorless.github.io/sydjs-preso-easing/#how-it-works-demo">Source: SydJS Easing Presentation</a></p>
 
 <p>The slope of this graph gets steeper over time meaning that the velocity increases over time.
 In other words, the object <strong>starts out slow and accelerates over time</strong>.</p>
@@ -232,6 +280,8 @@ In other words, the object <strong>starts out slow and accelerates over time</st
 
 <p><img src="/images/ease-out.png" alt="Ease Out" /></p>
 
+<p><a href="http://gilmoreorless.github.io/sydjs-preso-easing/#how-it-works-demo">Source: SydJS Easing Presentation</a></p>
+
 <p>This graph behaves in the opposite manner of an ease-in graph.
 The slope of this graph gets flatter over time meaning that the velocity decreases over time.
 In other words, the object <strong>starts out fast and decelerates over time</strong>.</p>
@@ -239,6 +289,8 @@ In other words, the object <strong>starts out fast and decelerates over time</st
 <h3>Ease-In-Out</h3>
 
 <p><img src="/images/ease-in-out.png" alt="Ease In-Out" /></p>
+
+<p><a href="http://gilmoreorless.github.io/sydjs-preso-easing/#how-it-works-demo">Source: SydJS Easing Presentation</a></p>
 
 <p>This graph is a combination of an ease-in and ease-out graph.
 Looking at the slope, we see that initially the object starts out slow and accelerates over time before hitting a peak velocity,
@@ -254,6 +306,8 @@ Recall that bounds for time between 0 and 1 and that decimal values yield smalle
 when raised to increased powers.</p>
 
 <p><img src="/images/degrees-of-easing.png" alt="Degrees of Easing" /></p>
+
+<p><a href="http://www.robertpenner.com/easing/penner_chapter7_tweening.pdf">Source: Penner</a></p>
 
 <pre><code>Let t = 0.8
     t^2 = 0.64
@@ -294,6 +348,8 @@ Therefore a <strong>squared</strong> variable is a quadratic.</p>
 
 <p><img src="/images/sine-easing.png" alt="sinEasing" /></p>
 
+<p><a href="http://www.robertpenner.com/easing/penner_chapter7_tweening.pdf">Source: Penner</a></p>
+
 <p>The position is a function of a sin: <code>p(t) = sin(t * π/2)</code>.
 Sinusoidal easing is quite gentle, even more so than quadratic easing.
 Its path doesn’t have a lot of curvature. Much of the
@@ -307,6 +363,8 @@ curve to it.</p>
 Generally exponential functions grow faster than power functions and are therefore more exaggerated.</p>
 
 <p><img src="/images/expo-easing.png" alt="exponentialEasing" /></p>
+
+<p><a href="http://www.robertpenner.com/easing/penner_chapter7_tweening.pdf">Source: Penner</a></p>
 
 <h4>History of Exponential Easing</h4>
 
@@ -334,6 +392,8 @@ We can verify the above example: 10 = 5 / (1 - 1/2) where <strong>c = 5 and r = 
 
 <p><img src="/images/circ-easing.png" alt="Circ Easing" /></p>
 
+<p><a href="http://www.robertpenner.com/easing/penner_chapter7_tweening.pdf">Source: Penner</a></p>
+
 <p>The position is a based of the equation for a half circle: <code>p(t) = 1 - sqrt(1 - t^2)</code>.
 This equation is derive from the equation of a <a href="http://en.wikipedia.org/wiki/Unit_circle">unit circle</a> <code>x^2 + y^2 = 1</code>
 Solving for <code>y</code>, we get that the upper half of the circle is <code>y = sqrt(1 - x^2)</code>.
@@ -353,6 +413,8 @@ ordered by roughly increasing curvature/acceleration.</p>
 
 <p><img src="/images/standard-easings.png" alt="Standard Easings" /></p>
 
+<p><a href="http://gilmoreorless.github.io/sydjs-preso-easing/#smooth-curves">Source: SydJS Easing Presentation</a></p>
+
 <h2>Special Effect Easings</h2>
 
 <p>More complex curves have been modeled to create special effects.</p>
@@ -364,6 +426,8 @@ The easing displayed below is <strong>easeOutBack</strong>.</p>
 
 <p><img src="/images/easeOutBack.png" alt="easeOutBack" /></p>
 
+<p><a href="http://gilmoreorless.github.io/sydjs-preso-easing/#cemd-anim-back">Source: SydJS Easing Presentation</a></p>
+
 <p data-height="268" data-theme-id="0" data-slug-hash="pFzlJ" data-default-tab="result" class='codepen'>See the Pen <a href='http://codepen.io/radialglo/pen/pFzlJ/'>easeOutBack</a> by Anthony Su (<a href='http://codepen.io/radialglo'>@radialglo</a>) on <a href='http://codepen.io'>CodePen</a>.</p>
 
 
@@ -373,6 +437,8 @@ The easing displayed below is <strong>easeOutBack</strong>.</p>
 
 <p><img src="/images/easeOutElastic.png" alt="easeOutElastic" /></p>
 
+<p><a href="http://gilmoreorless.github.io/sydjs-preso-easing/#cemd-anim-elastic">Source: SydJS Easing Presentation</a></p>
+
 <p data-height="268" data-theme-id="0" data-slug-hash="tnCJi" data-default-tab="result" class='codepen'>See the Pen <a href='http://codepen.io/radialglo/pen/tnCJi/'>easeOutElastic</a> by Anthony Su (<a href='http://codepen.io/radialglo'>@radialglo</a>) on <a href='http://codepen.io'>CodePen</a>.</p>
 
 
@@ -381,6 +447,8 @@ The easing displayed below is <strong>easeOutBack</strong>.</p>
 <p>The start and end position form boundaries for easeIn and easeOut respectively, whereupon the object bounces.</p>
 
 <p><img src="/images/easeOutBounce.png" alt="easeOutBounce" /></p>
+
+<p><a href="http://gilmoreorless.github.io/sydjs-preso-easing/#cemd-anim-bounce">Source: SydJS Easing Presentation</a></p>
 
 <p data-height="268" data-theme-id="0" data-slug-hash="HspKu" data-default-tab="result" class='codepen'>See the Pen <a href='http://codepen.io/radialglo/pen/HspKu/'>easeOutBounce</a> by Anthony Su (<a href='http://codepen.io/radialglo'>@radialglo</a>) on <a href='http://codepen.io'>CodePen</a>.</p>
 
@@ -435,6 +503,17 @@ begins to leave the stage, respectively.</p>
 -->
 
 
+<h3>Timing</h3>
+
+<p>If your just starting out some <a href="https://developers.google.com/web/fundamentals/look-and-feel/animations/choosing-the-right-easing">suggested duration of easings</a>
+are</p>
+
+<p><strong>Ease-outs: around 200ms - 500ms.</strong> This gives the eye chance to see the animation, but doesn’t feel obstructive.</p>
+
+<p><strong>Ease-ins: around 200ms - 500ms.</strong> Bear in mind that it will jolt at the end (from the acceleration) and no amount of timing changes will soften that feel.</p>
+
+<p><strong>Bounce or elastic effects: around 800ms - 1200ms.</strong> You need to allow time for the elastic or bounce effect to ‘settle’. Without this extra time the elastic bouncing part of the animation will be really aggressive and unpleasant to the eye.</p>
+
 <h3>Car example</h3>
 
 <p>We&#8217;ll be animating a car to understand how to apply easing.</p>
@@ -473,6 +552,10 @@ Use <strong>easeIn</strong> to move something <strong>off</strong> stage</p>
 
 <p data-height="268" data-theme-id="0" data-slug-hash="tDqbr" data-default-tab="result" class='codepen'>See the Pen <a href='http://codepen.io/radialglo/pen/tDqbr/'>Car backing off stage</a> by Anthony Su (<a href='http://codepen.io/radialglo'>@radialglo</a>) on <a href='http://codepen.io'>CodePen</a>.</p>
 
+
+<p>Now that you know how to apply easeIn, easeOut, and easeInOut
+you can change the power of your easing (Quad, Cubic, Quart &#8230;)
+to minimize or exaggerate the effect.</p>
 
 <h2>Easings in the Wild</h2>
 
@@ -715,7 +798,7 @@ Recall that Flickr does use easeInOutQuart for some of its easing although the t
 here appears to be more pronounced because a larger object(the background image) is being moved.
 This site less ways to navigate and does not allow for interrupts.</p>
 
-<p>The gist of creating this affect is to define a state in which the slide is hidden
+<p>The gist of creating this effect is to define a state in which the slide is hidden
 and a state in which a slide is active and defining how to transition between each state.</p>
 
 <pre><code>/*
@@ -757,13 +840,15 @@ cubic-bezier(0.325, 0, 0.000, 1.650);
 <p><a href="http://paulstamatiou.com/">Paul Stamatiou</a> is a designer at Twitter.
 This is a pretty interesting interaction he used for his site&#8217;s navigation.</p>
 
-<p><img src="/images/stamatiou-nav.gif" alt="Stamatious Nav" /></p>
+<p><img src="/images/stamatiou-nav.gif" alt="Stamatiou Nav" /></p>
 
 <p>This interaction uses a custom bezier-curve <code>cubic-bezier(0.325, 0, 0.000, 1.650)</code>
 which is a combination of a very short easeIn followed by an
-exaggerated easeOutBack.</p>
+exaggerated easeOutBack. This gives the navigation playfulness.</p>
 
 <p><img src="/images/crazyeaseOutBack.png" alt="crazy Ease Out Back" /></p>
+
+<p><a href="http://matthewlein.com/ceaser/">Source: Ceaser</a></p>
 
 <h3>Google Design Example: Radial Action</h3>
 
@@ -772,6 +857,22 @@ exaggerated easeOutBack.</p>
 In this example we see that the epicenter of action occurs at left and ripples out to the right.</p>
 
 <p><img src="/images/radialReact-nav.gif" alt="Radial React" /></p>
+
+<p><a href="http://vimeo.com/93206523">The illusion of life</a> from <a href="http://vimeo.com/centodesign">cento lodigiani</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
+
+
+<iframe src="//player.vimeo.com/video/93206523" width="500" height="198" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+
+
+<p></p>
+
+<p><a href="http://vimeo.com/99876106">Elements of Design</a> from <a href="http://vimeo.com/user7248612">matt greenwood</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
+
+
+<iframe src="//player.vimeo.com/video/99876106" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+
+
+<p></p>
 
 <h2>Tools</h2>
 
