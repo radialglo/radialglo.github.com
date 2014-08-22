@@ -135,12 +135,12 @@ a good <a href="http://www.robertpenner.com/easing/">set of resources on his sit
 </ol>
 
 
-<h3>What is easing</h3>
+<h2>What is easing</h2>
 
 <p><strong>Easing</strong> comes into play because it used to model how <strong>position changes with time</strong>.
 <a href="http://www.robertpenner.com/">Robert Penner</a> created a set of <a href="http://www.robertpenner.com/easing/">easing functions</a> to model these positional changes.</p>
 
-<h3>How to interpret easing graphs</h3>
+<h2>How to interpret easing graphs</h2>
 
 <p>There is quite a selection of easing functions to choose from, so how do you choose which one works best for you?
 Luckily, these easing functions have been visualized as <a href="http://easings.net/">position vs. time graphs</a>, so understanding how to interpret these
@@ -185,21 +185,21 @@ I would also recommend playing with this
 created by <a href="https://github.com/gilmoreorless">Gilmore Davidson</a> which is where the
 following images are adapted from.</p>
 
-<h4>Linear</h4>
+<h3>Linear</h3>
 
 <p><img src="/images/linear-easing.png" alt="Linear Easing" /></p>
 
 <p>The slope of this graph is a constant value, because the line is straight.
 A constant velocity means that there is no acceleration.</p>
 
-<h4>Ease-In</h4>
+<h3>Ease-In</h3>
 
 <p><img src="/images/ease-in.png" alt="Ease In" /></p>
 
 <p>The slope of this graph gets steeper over time meaning that the velocity increases over time.
 In other words, the object <strong>starts out slow and accelerates over time</strong>.</p>
 
-<h4>Ease-Out</h4>
+<h3>Ease-Out</h3>
 
 <p><img src="/images/ease-out.png" alt="Ease Out" /></p>
 
@@ -207,7 +207,7 @@ In other words, the object <strong>starts out slow and accelerates over time</st
 The slope of this graph gets flatter over time meaning that the velocity decreases over time.
 In other words, the object <strong>starts out fast and decelerates over time</strong>.</p>
 
-<h4>Ease-In-Out</h4>
+<h3>Ease-In-Out</h3>
 
 <p><img src="/images/ease-in-out.png" alt="Ease In-Out" /></p>
 
@@ -215,7 +215,7 @@ In other words, the object <strong>starts out fast and decelerates over time</st
 Looking at the slope, we see that initially the object starts out slow and accelerates over time before hitting a peak velocity,
 followed by a gradual deceleration before stopping.</p>
 
-<h3>Different Degrees of Easing</h3>
+<h2>Different Degrees of Easing</h2>
 
 <p>These &#8220;standard&#8221; easing classes model position as a <a href="http://en.wikipedia.org/wiki/Power_function">power function</a> of <code>time t</code>
 raised to some power: Linear - 1, Quad(ratic) - 2, Cubic - 3, Quart(ic) - 4, Quint(ic) - 5.</p>
@@ -238,30 +238,30 @@ this means that increasing powers exaggerates the easing effect.
 In particular for <strong>easeIn</strong> easings, the object remains slower for a longer time and
 accelerates faster when it finally speeds up.</p>
 
-<h4>Linear</h4>
+<h3>Linear</h3>
 
 <p>Power of 1. Uses Constant Velocity.</p>
 
-<h4>Quad</h4>
+<h3>Quad</h3>
 
 <p>Power of 2. Interesting tidbit to distinguish <strong>Quad</strong> from <strong>Quart</strong>: Although the prefix quad means four, quad originally referred to the four sides of a square.
 Therefore a <strong>squared</strong> variable is a quadratic.</p>
 
-<h4>Cubic</h4>
+<h3>Cubic</h3>
 
 <p>Power of 3.</p>
 
-<h4>Quart</h4>
+<h3>Quart</h3>
 
 <p>Power of 4.</p>
 
-<h4>Quint</h4>
+<h3>Quint</h3>
 
 <p>Power of 5.</p>
 
-<h3>Other Easings</h3>
+<h2>Other Easings</h2>
 
-<h4>Sinusoidal Easing</h4>
+<h3>Sinusoidal Easing</h3>
 
 <p><img src="/images/sine-easing.png" alt="sinEasing" /></p>
 
@@ -271,7 +271,7 @@ Its path doesn’t have a lot of curvature. Much of the
 curve resembles a straight line angled at 45 degrees, with just a bit of a
 curve to it.</p>
 
-<h4>Exponential Easing</h4>
+<h3>Exponential Easing</h3>
 
 <p>Recall that for an exponential function such as <a href="http://en.wikipedia.org/wiki/Exponential_growth">exponential growth</a>,
 <strong>time t is an exponent</strong> 2<sup>t,</sup> whereas in power functions time is a value raised to a constant value for example t<sup>2.</sup>
@@ -279,7 +279,7 @@ Generally exponential functions grow faster than power functions and are therefo
 
 <p><img src="/images/expo-easing.png" alt="exponentialEasing" /></p>
 
-<h5>History of Exponential Easing</h5>
+<h4>History of Exponential Easing</h4>
 
 <p>The Exponential Easing is based off what Robert Penner calls the <strong>standard exponential slide</strong>,
 that was used often used in ActionScript, a dialect of ECMAScript used for Flash.</p>
@@ -301,7 +301,7 @@ which is a sum of a sequence of terms where there is a constant ratio between su
 The sum of a Geometric series is <code>c / (1 - r)</code>, where <strong>c is  constant multiplied to each term</strong> and <strong>r is the ratio between each term</strong>
 We can verify the above example: 10 = 5 / (1 - 1/2) where <strong>c = 5 and r = 1 / 2</strong>.</p>
 
-<h4>Circular Easing</h4>
+<h3>Circular Easing</h3>
 
 <p><img src="/images/circ-easing.png" alt="Circ Easing" /></p>
 
@@ -324,11 +324,11 @@ ordered by roughly increasing curvature/acceleration.</p>
 
 <p><img src="/images/standard-easings.png" alt="Standard Easings" /></p>
 
-<h3>Special Effect Easings</h3>
+<h2>Special Effect Easings</h2>
 
 <p>More complex curves have been modeled to create special effects.</p>
 
-<h4>Back</h4>
+<h3>Back</h3>
 
 <p>This easing exceeds the start or end position for easeIn and easeOut respectively, before springing back into place.
 The easing displayed below is <strong>easeOutBack</strong>.</p>
@@ -338,7 +338,7 @@ The easing displayed below is <strong>easeOutBack</strong>.</p>
 <p data-height="268" data-theme-id="0" data-slug-hash="pFzlJ" data-default-tab="result" class='codepen'>See the Pen <a href='http://codepen.io/radialglo/pen/pFzlJ/'>easeOutBack</a> by Anthony Su (<a href='http://codepen.io/radialglo'>@radialglo</a>) on <a href='http://codepen.io'>CodePen</a>.</p>
 
 
-<h4>Elastic</h4>
+<h3>Elastic</h3>
 
 <p>This easing <strong>oscillates</strong> around the  start or end position for easeIn and easeOut respectively.</p>
 
@@ -347,7 +347,7 @@ The easing displayed below is <strong>easeOutBack</strong>.</p>
 <p data-height="268" data-theme-id="0" data-slug-hash="tnCJi" data-default-tab="result" class='codepen'>See the Pen <a href='http://codepen.io/radialglo/pen/tnCJi/'>easeOutElastic</a> by Anthony Su (<a href='http://codepen.io/radialglo'>@radialglo</a>) on <a href='http://codepen.io'>CodePen</a>.</p>
 
 
-<h4>Bounce</h4>
+<h3>Bounce</h3>
 
 <p>The start and end position form boundaries for easeIn and easeOut respectively, whereupon the object bounces.</p>
 
@@ -356,7 +356,7 @@ The easing displayed below is <strong>easeOutBack</strong>.</p>
 <p data-height="268" data-theme-id="0" data-slug-hash="HspKu" data-default-tab="result" class='codepen'>See the Pen <a href='http://codepen.io/radialglo/pen/HspKu/'>easeOutBounce</a> by Anthony Su (<a href='http://codepen.io/radialglo'>@radialglo</a>) on <a href='http://codepen.io'>CodePen</a>.</p>
 
 
-<h3>CSS Easing</h3>
+<h2>CSS Easing</h2>
 
 <p>Although Robert Penner&#8217;s equations were written originally as functions, many of these functions
 can also be used in CSS3 using the <strong>cubic-bezier</strong> <a href="http://www.w3.org/TR/css3-transitions/#transition-timing-function">transition timing function</a>.
@@ -377,7 +377,7 @@ then you must use a JavaScript or some other programmatic implementation of easi
 -->
 
 
-<h3>How to apply easings</h3>
+<h2>How to apply easings</h2>
 
 <p>Generally speaking, <strong>linear motion is often mechanical rather than natural</strong>.
 You want to conform to the natural laws of motion so that your animation is believable.</p>
@@ -406,11 +406,11 @@ begins to leave the stage, respectively.</p>
 -->
 
 
-<h4>Car example</h4>
+<h3>Car example</h3>
 
 <p>We&#8217;ll be animating a car to understand how to apply easing.</p>
 
-<h5>EaseInOut</h5>
+<h4>EaseInOut</h4>
 
 <p>Initially your car starts out <strong>parked</strong>. When you start your car,
 you need to push on the pedal to <strong>accelerate</strong> to a comfortable cruising speed
@@ -424,7 +424,7 @@ Use <strong>easeInOut</strong> to move something <strong>across</strong> the sta
 <p data-height="268" data-theme-id="0" data-slug-hash="Hnlod" data-default-tab="result" class='codepen'>See the Pen <a href='http://codepen.io/radialglo/pen/Hnlod/'>Car driving across stage</a> by Anthony Su (<a href='http://codepen.io/radialglo'>@radialglo</a>) on <a href='http://codepen.io'>CodePen</a>.</p>
 
 
-<h5>EaseOut</h5>
+<h4>EaseOut</h4>
 
 <p>Let&#8217;s say you were to see a friend arrive at your house for an evening party.
 By the time your friend reaches your house he/she will already be traveling
@@ -434,7 +434,7 @@ Use <strong>easeOut</strong> to move something <strong>onto</strong> the stage</
 <p data-height="268" data-theme-id="0" data-slug-hash="FpLHn" data-default-tab="result" class='codepen'>See the Pen <a href='http://codepen.io/radialglo/pen/FpLHn/'>Car driving onto stage</a> by Anthony Su (<a href='http://codepen.io/radialglo'>@radialglo</a>) on <a href='http://codepen.io'>CodePen</a>.</p>
 
 
-<h5>EaseIn</h5>
+<h4>EaseIn</h4>
 
 <p>After the party, you say goodbye to your friend and watch as his/her car leaves
 your neighborhood. Your friend needs to start the parked car
@@ -445,19 +445,222 @@ Use <strong>easeIn</strong> to move something <strong>off</strong> stage</p>
 <p data-height="268" data-theme-id="0" data-slug-hash="tDqbr" data-default-tab="result" class='codepen'>See the Pen <a href='http://codepen.io/radialglo/pen/tDqbr/'>Car backing off stage</a> by Anthony Su (<a href='http://codepen.io/radialglo'>@radialglo</a>) on <a href='http://codepen.io'>CodePen</a>.</p>
 
 
-<h3>Easings in the Wild</h3>
+<h2>Easings in the Wild</h2>
 
 <p>Next let&#8217;s examine how easing is being used across the web.</p>
 
-<h4>Flickr</h4>
+<h3>Flickr</h3>
 
-<p><img src="/images/flickr-click.gif" alt="Flickr Click" />
-<img src="/images/flickr-scroll.gif" alt="Flickr Scroll" />
-<img src="/images/flickr-click-scroll.gif" alt="Flickr Click Scroll" />
-<img src="/images/flickr-interrupt-click.gif" alt="Flickr Interrupt Click" />
-<img src="/images/flickr-far-click.gif" alt="Flickr Far Click" /></p>
+<p><a href="https://www.flickr.com/">Flickr</a> is built using <a href="https://yuilibrary.com/">YUI</a>, Yahoo User Interface Library,
+Yahoo&#8217;s JavaScript framework.
+The site currently uses <strong>scroll-jacking</strong>, which is
+the process of overriding default user scrolling with a custom
+interaction design paradigm.</p>
 
-<h4>Google Glass</h4>
+<p>The user interface also has arrow buttons, bullet lists, and accepts
+keyboard input such as space bar / page down, j/k, arrow keys for navigation.</p>
+
+<p>From the source code we can see the handling of keypresses and clicks.
+All of these input methods are used to animate the scroll position.</p>
+
+<h4>Keydown Source</h4>
+
+<pre><code>Y.one(document).on('keydown', function(e) {
+
+    var down, up, beginning, end;
+    var ignoreMultiple;
+
+    // space bar / page down, j/k, arrow keys
+    if (e.keyCode) {
+        down = (e.keyCode === 32 || e.keyCode === 34 || e.keyCode === 74 || e.keyCode === 40);
+        up = (e.keyCode === 33 || e.keyCode === 75 || e.keyCode === 38);
+        beginning = (e.keyCode === 36);
+        end = (e.keyCode === 35);
+    }
+
+    // ignore if in an input, select/option etc.
+    if (!document.activeElement || !document.activeElement.nodeName.match(/(input|select|option)/i)) {
+
+        // block multiple events only for up/down arrow keys.
+        if (!down &amp;&amp; !up) {
+            ignoreMultiple = true;
+        }
+
+        // do the nav thing
+        if (down) {
+            animateTo('#section-' + getNextSection(), ignoreMultiple);
+        } else if (up) {
+            animateTo('#section-' + getPreviousSection(), ignoreMultiple);
+        } else if (beginning) {
+            animateTo('#section-1');
+        } else if (end) {
+            animateTo('#section-' + maxSections);
+        }
+
+        // override default actions
+        if (up || down || beginning || end) {
+            e.preventDefault();
+            return false;
+        }
+
+    }
+
+});
+</code></pre>
+
+<h4>Click Source</h4>
+
+<pre><code>Y.one('body').on('click', function(e) {
+
+        var target = e.target;
+        var href = target.get('href');
+        var hash, hashOffset;
+        var url;
+        var anim;
+
+        if (href) {
+
+            // a #section-x link was clicked.
+
+            if (href.match(/section/i)) {
+
+                hashOffset = href.indexOf('#');
+
+                if (hashOffset !== -1) {
+                    hash = href.substr(hashOffset);
+                    animateTo(hash);
+                    e.preventDefault();
+                    return false;
+                }
+
+            } else {
+
+                // up/down navigation links.
+
+                if (href.match(/\#down/i)) {
+
+                    animateTo('#section-' + getNextSection());
+
+                    e.preventDefault();
+                    return false;
+
+                } else if (href.match(/\#up/i)) {
+
+                    animateTo('#section-' + getPreviousSection());
+
+                    e.preventDefault();
+                    return false;
+
+                }
+
+            }
+
+        }
+
+    });
+</code></pre>
+
+<p>Reading through the source you&#8217;ll notice primary function
+that we see being used for navigation is <strong>animateTo</strong>.</p>
+
+<p>The primary part of that function is to note initialization of
+the <a href="http://yuilibrary.com/yui/docs/api/classes/Anim.html"><strong>YUI Animation Class</strong></a></p>
+
+<pre><code>scrollAnimation = new Y.Anim({
+    node: scrollElement,
+    to: {
+        scrollTop: parseInt(targetY, 10)
+    },
+    // if existing animation was interrupted, move really fast to indicate responsiveness.
+    easing: (interrupted ? 'easeOutStrong' : (scrollAction ? 'easeBoth' : 'easeBothStrong')),
+    duration: duration
+});
+</code></pre>
+
+<p>The JavaScript is animating the <strong>scrollTop</strong> of the document.
+Also pay attention to the line where the initialization of the easing property occurs.
+Notice how there are actually three forms of easings for navigation:
+ <strong>easeBoth</strong> (equivalent to easeInOutQuad), <strong>easeBothStrong</strong> (equivalent to easeInOutQuartic), and
+<strong>easeOutStrong</strong> (equivalent to easeOutQuartic).
+For additional eases available in <a href="https://yuilibrary.com/">YUI</a>,
+refer to the <a href="http://yuilibrary.com/yui/docs/api/classes/Easing.html">Easing Class</a>.</p>
+
+<p>These easing are being used as follows:</p>
+
+<h4>Flickr: Scroll Navigation</h4>
+
+<p><strong>easeBoth</strong></p>
+
+<p><img src="/images/flickr-scroll.gif" alt="Flickr Scroll" /></p>
+
+<ul>
+<li><p>If the user <strong>scrolls</strong>, use a easeInOutQuad easing to move to the next section &#8211; start out slow before swift acceleration
+followed by gradual deceleration.</p></li>
+<li><p>The easing makes sense because there is one section moving off stage (easeIn)
+followed by another section moving into view (easeOut). Hence the use of easeBoth.</p></li>
+<li><p>One interesting to note is that the transition is a response to the user&#8217;s scrolling.
+Because the transition starts out slow, the user may percieve this as a slow responsive website.
+The general rule of thumb is to <strong>respond to a user interaction quickly</strong>.
+Thus, potentially slow percieved performance is tradeoff when using an <strong>easeInOutQuad</strong> transition to respond to the user.</p></li>
+</ul>
+
+
+<h4>Flickr: Click Navigation</h4>
+
+<p><strong>easeBothStrong</strong></p>
+
+<p><img src="/images/flickr-click.gif" alt="Flickr Click" /></p>
+
+<ul>
+<li>For all other forms of input such as <strong>button click</strong> or valid <strong>keypresses</strong>
+use a more dramatic easeInOut function: <strong>easeInOutStrong (easeInOutQuartic)</strong>.</li>
+<li>It&#8217;s pretty interesting this easing is more exaggerated than that of scrolling.
+I think the rational is that because buttons are more custom than native scrolling,
+there is more flexibility to define a more dramatic transition.</li>
+<li>From my view, I think the easing for scrolling and clicks should be consistent.
+At the same I would imagine that users probably stay with one method of navigation
+when browsing the site, so the difference could be negligible.</li>
+</ul>
+
+
+<h4>Flickr: Click vs Scroll Comparison</h4>
+
+<p><img src="/images/flickr-click-scroll.gif" alt="Flickr Click Scroll" /></p>
+
+<p>To really see the compare the <strong>click navigation(easeInOutQuartic)
+vs. scroll navigation(easeInOutQuad)</strong>, notice the difference
+between the click and scroll when they are performed one after another.
+Since the <strong>click(Quartic)</strong> has a higher easing degree than <strong>scroll(Quad)</strong>
+the acceleration for the click is more dramatic.
+Note that the click occurs first followed by the scroll.</p>
+
+<h4>Flickr: Interrupt Navigation</h4>
+
+<p><strong>easeOutStrong</strong></p>
+
+<p><img src="/images/flickr-interrupt-click.gif" alt="Flickr Interrupt Click" /></p>
+
+<ul>
+<li>If the user tries navigating while an animation is in progress (an interrupt)  perform an easeOutQuartic
+easing to the next section. (Note from the dots on the right, that we are navigating from slide 1 to 3)</li>
+<li>The interaction is defined such that when an interrupt occurs navigate to the newly desired slide.</li>
+<li>As such, using <strong>easeOutStrong</strong> makes sense here. Since the currently slide is already moving
+it should continue moving at a high velocity before coming to rest.</li>
+</ul>
+
+
+<h4>Flickr: Far Click</h4>
+
+<p><strong>easeBothStrong</strong></p>
+
+<p><img src="/images/flickr-far-click.gif" alt="Flickr Far Click" /></p>
+
+<p>This is the same easing as the click navigation discussed above.
+In this example, the user jumps over sections navigating to slide 5 from slide 1 by clicking dot 5.
+The difference here is that because the scroll animation occurs over a longer distance
+within the same time, the velocity here is greater.</p>
+
+<h3>Google Glass</h3>
 
 <!--
 .fade-out
@@ -467,20 +670,30 @@ cubic-bezier(.77,0,.175,1)
 -->
 
 
-<p><img src="/images/glass-click.gif" alt="Glass Click" />
-<img src="/images/glass-far-click.gif" alt="Glass Far Click" /></p>
+<h4>Google Glass: Click Navigation</h4>
+
+<p>Next we&#8217;ll look at another implementation of a <strong>scroll-jacked</strong>
+website: Google Glass&#8217; start page.
+<img src="/images/glass-click.gif" alt="Glass Click" /></p>
+
+<h4>Google Glass: Far Click</h4>
+
+<p><img src="/images/glass-far-click.gif" alt="Glass Far Click" /></p>
 
 <!--
 cubic-bezier(0.325, 0, 0.000, 1.650);
 -->
 
 
-<h4>Paul Stamatiou</h4>
+<h3>Paul Stamatiou</h3>
 
-<p><img src="/images/stamatiou-nav.gif" alt="Stamatious Nav" />
-<img src="/images/radialReact-nav.gif" alt="Radial React" /></p>
+<p><img src="/images/stamatiou-nav.gif" alt="Stamatious Nav" /></p>
 
-<h3>Tools</h3>
+<h3>Google Design Example: Radial Action</h3>
+
+<p><img src="/images/radialReact-nav.gif" alt="Radial React" /></p>
+
+<h2>Tools</h2>
 
 <p>Some <strong>tools</strong> I would recommend to further explore easing are:</p>
 
