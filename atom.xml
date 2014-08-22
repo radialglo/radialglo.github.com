@@ -4,7 +4,7 @@
   <title><![CDATA[Code Dock]]></title>
   <link href="http://radialglo.github.com/atom.xml" rel="self"/>
   <link href="http://radialglo.github.com/"/>
-  <updated>2014-08-21T20:51:11-07:00</updated>
+  <updated>2014-08-21T22:47:32-07:00</updated>
   <id>http://radialglo.github.com/</id>
   <author>
     <name><![CDATA[Anthony Su]]></name>
@@ -581,13 +581,51 @@ cubic-bezier(.77,0,.175,1)
 -->
 
 
+<p>Next we&#8217;ll look at another implementation of a <strong>scroll-jacked</strong>
+website: Google Glass&#8217; <a href="http://www.google.com/glass/start/">start page</a>.</p>
+
 <h4>Google Glass: Click Navigation</h4>
 
-<p>Next we&#8217;ll look at another implementation of a <strong>scroll-jacked</strong>
-website: Google Glass&#8217; start page.
-<img src="http://radialglo.github.com/images/glass-click.gif" alt="Glass Click" /></p>
+<p><strong>easeInOutQuart</strong></p>
+
+<p><img src="http://radialglo.github.com/images/glass-click.gif" alt="Glass Click" /></p>
+
+<p>This site is implemented using CSS3.
+The easing that is being used is a <code>cubic-bezier(.77,0,.175,1)</code>, which is <strong>easeInOutQuart</strong>,
+and the site makes use of CSS3 transforms to translate to the next slide.
+Recall that Flickr does use easeInOutQuart for some of its easing although the transition
+here appears to be more pronounced because a larger object(the background image) is being moved.
+This site less ways to navigate and does not allow for interrupts.</p>
+
+<p>The gist of creating this affect is to define a state in which the slide is hidden
+and a state in which a slide is active and defining how to transition between each state.</p>
+
+<pre><code>/*
+    translate 100% of the slide's body to move it offscreen
+*/
+.slide { 
+    transform: translate3d(0,100%,0)
+    transition: transform 1s;
+    transition-timing-function: cubic-bezier(.77,0,.175,1);
+}
+/*
+    don't translate
+    toggling the .active class on a slide will bring the slide into view
+*/
+.slide.active {
+    transform: translate3d(0,0,0)
+}
+</code></pre>
 
 <h4>Google Glass: Far Click</h4>
+
+<p>The way this site handles skipping over sections is to fade out
+the old image and fade in the new image.
+It fades out the image using the default transition: <strong>ease</strong>
+and then fading back in using the <strong>easeOutQuart</strong> cubic-bezier curve.</p>
+
+<p>This interaction differs from Flickr which increases the velocity to make the jump
+between slides.</p>
 
 <p><img src="http://radialglo.github.com/images/glass-far-click.gif" alt="Glass Far Click" /></p>
 
@@ -598,9 +636,22 @@ cubic-bezier(0.325, 0, 0.000, 1.650);
 
 <h3>Paul Stamatiou</h3>
 
+<p><a href="http://paulstamatiou.com/">Paul Stamatiou</a> is a designer at Twitter.
+This is a pretty interesting interaction he used for his site&#8217;s navigation.</p>
+
 <p><img src="http://radialglo.github.com/images/stamatiou-nav.gif" alt="Stamatious Nav" /></p>
 
+<p>This interaction uses a custom bezier-curve <code>cubic-bezier(0.325, 0, 0.000, 1.650)</code>
+which is a combination of a very short easeIn followed by an
+exaggerated easeOutBack.</p>
+
+<p><img src="http://radialglo.github.com/images/crazyeaseOutBack.png" alt="crazy Ease Out Back" /></p>
+
 <h3>Google Design Example: Radial Action</h3>
+
+<p>This example is from Google&#8217;s Material Design section on
+<a href="http://www.google.com/design/spec/animation/responsive-interaction.html#responsive-interaction-surface-response">Responsive Interaction</a>.
+In this example we see that the epicenter of action occurs at left and ripples out to the right.</p>
 
 <p><img src="http://radialglo.github.com/images/radialReact-nav.gif" alt="Radial React" /></p>
 
