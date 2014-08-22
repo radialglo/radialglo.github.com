@@ -305,7 +305,7 @@ followed by a gradual deceleration before stopping.</p>
 raised to some power: Linear - 1, Quad(ratic) - 2, Cubic - 3, Quart(ic) - 4, Quint(ic) - 5.</p>
 
 <p>We&#8217;ll look at these different degrees of easing by examining the <strong>easeIn</strong> curve.
-Recall that bounds for time between 0 and 1 and that decimal values yield smaller values
+Recall that the bounds for time are between 0 and 1 and that decimal values yield smaller values
 when raised to increased powers.</p>
 
 <p><img src="/images/degrees-of-easing.png" alt="Degrees of Easing" /></p>
@@ -398,7 +398,7 @@ We can verify the above example: 10 = 5 / (1 - 1/2) where <strong>c = 5 and r = 
 <p><a href="http://www.robertpenner.com/easing/penner_chapter7_tweening.pdf">Source: Penner</a></p>
 
 <p>The position is a based of the equation for a half circle: <code>p(t) = 1 - sqrt(1 - t^2)</code>.
-This equation is derive from the equation of a <a href="http://en.wikipedia.org/wiki/Unit_circle">unit circle</a> <code>x^2 + y^2 = 1</code>
+This equation is derived from the equation of a <a href="http://en.wikipedia.org/wiki/Unit_circle">unit circle</a> <code>x^2 + y^2 = 1</code>
 Solving for <code>y</code>, we get that the upper half of the circle is <code>y = sqrt(1 - x^2)</code>.
 Likewise the lower half of the circle is <code>y = -sqrt(1 - x^2)</code>, because negating the equation flips
 the graph vertically (over the y axis).
@@ -484,7 +484,7 @@ You want to conform to the natural laws of motion so that your animation is beli
 
 <p>However this does not mean you should completely ignore linear easings
 even if your not animating mechanical objects.
-Easings don&#8217;t neccesarily need be model <strong>physical position</strong>, but can really
+Easings don&#8217;t neccesarily need to model <strong>physical position</strong>, but can really
 used to model any kind of one dimensional value such as <strong>opacity</strong>.
 Similarly some applications of linear easing can be used for creating
 camera effects like <strong>zooming</strong> or <strong>panning</strong> when creating a <strong>timelapse</strong>
@@ -675,7 +675,7 @@ All of these input methods are used to animate the scroll position.</p>
     });
 </code></pre>
 
-<p>Reading through the source you&#8217;ll notice primary function
+<p>Reading through the source you&#8217;ll notice the primary function
 that we see being used for navigation is <strong>animateTo</strong>.</p>
 
 <p>The primary part of that function is to note initialization of
@@ -742,7 +742,7 @@ when browsing the site, so the difference could be negligible.</li>
 
 <p><img src="/images/flickr-click-scroll.gif" alt="Flickr Click Scroll" /></p>
 
-<p>To really see the compare the <strong>click navigation(easeInOutQuartic)
+<p>To really compare  <strong>click navigation(easeInOutQuartic)
 vs. scroll navigation(easeInOutQuad)</strong>, notice the difference
 between the click and scroll when they are performed one after another.
 Since the <strong>click(Quartic)</strong> has a higher easing degree than <strong>scroll(Quad)</strong>
