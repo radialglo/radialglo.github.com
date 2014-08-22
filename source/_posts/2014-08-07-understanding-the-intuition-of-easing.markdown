@@ -176,7 +176,7 @@ These "standard" easing classes model position as a [power function](http://en.w
 raised to some power: Linear - 1, Quad(ratic) - 2, Cubic - 3, Quart(ic) - 4, Quint(ic) - 5.
 
 We'll look at these different degrees of easing by examining the **easeIn** curve.
-Recall that bounds for time between 0 and 1 and that decimal values yield smaller values 
+Recall that the bounds for time are between 0 and 1 and that decimal values yield smaller values 
 when raised to increased powers.
 
 ![Degrees of Easing](/images/degrees-of-easing.png)
@@ -258,7 +258,7 @@ We can verify the above example: 10 = 5 / (1 - 1/2) where **c = 5 and r = 1 / 2*
 
 
 The position is a based of the equation for a half circle: ```p(t) = 1 - sqrt(1 - t^2)```.
-This equation is derive from the equation of a [unit circle](http://en.wikipedia.org/wiki/Unit_circle) ```x^2 + y^2 = 1```
+This equation is derived from the equation of a [unit circle](http://en.wikipedia.org/wiki/Unit_circle) ```x^2 + y^2 = 1```
 Solving for ```y```, we get that the upper half of the circle is ```y = sqrt(1 - x^2)```.
 Likewise the lower half of the circle is ```y = -sqrt(1 - x^2)```, because negating the equation flips
 the graph vertically (over the y axis).
@@ -335,7 +335,7 @@ You want to conform to the natural laws of motion so that your animation is beli
 
 However this does not mean you should completely ignore linear easings
 even if your not animating mechanical objects.
-Easings don't neccesarily need be model **physical position**, but can really
+Easings don't neccesarily need to model **physical position**, but can really
 used to model any kind of one dimensional value such as **opacity**.
 Similarly some applications of linear easing can be used for creating 
 camera effects like **zooming** or **panning** when creating a **timelapse**
@@ -516,7 +516,7 @@ All of these input methods are used to animate the scroll position.
 
         });
 
-Reading through the source you'll notice primary function
+Reading through the source you'll notice the primary function
 that we see being used for navigation is **animateTo**.
 
 The primary part of that function is to note initialization of 
@@ -577,7 +577,7 @@ when browsing the site, so the difference could be negligible.
 
 ![Flickr Click Scroll](/images/flickr-click-scroll.gif)
 
-To really see the compare the **click navigation(easeInOutQuartic)
+To really compare  **click navigation(easeInOutQuartic)
 vs. scroll navigation(easeInOutQuad)**, notice the difference
 between the click and scroll when they are performed one after another.
 Since the **click(Quartic)** has a higher easing degree than **scroll(Quad)**
