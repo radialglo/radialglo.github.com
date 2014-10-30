@@ -1,0 +1,865 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Additional Things I learned from jQuery Source - Anthony Su</title>
+  <meta name="author" content="Anthony Su">
+
+  
+  <meta name="description" content="Introduction Several months ago I decided to build a client side library called Guac.
+The library supports a similar and trimmed down API of that of &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://radialglo.github.com/blog/2014/10/27/additional-things-i-learned-from-jquery-source">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Anthony Su" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-50887935-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Anthony Su</a></h1>
+  
+    <h2>coding adventures</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:radialglo.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Additional Things I Learned From jQuery Source</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-10-27T17:03:00-07:00" pubdate data-updated="true">Oct 27<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>Introduction</h2>
+
+<p>Several months ago I decided to build a client side library called <a href="https://github.com/radialglo/guac">Guac</a>.
+The library supports a similar and trimmed down API of that of <a href="http://jquery.com/">jQuery</a>.
+My library is by no means production ready, but building it was a good exercise for me to also explore
+the internals of <a href="https://github.com/jquery/jquery">jQuery</a>.</p>
+
+<p>This posts will discuss some  of the internal workings of jQuery and explain how these
+ideas relate to the higher level API of jQuery.
+I will be walking you through parts of the <a href="https://github.com/jquery/jquery">jQuery codebase</a>.</p>
+
+<p>I would also recommend taking a look at <a href="http://www.paulirish.com/">Paul Irish&#8217;s</a> related posts:
+<a href="http://www.paulirish.com/2010/10-things-i-learned-from-the-jquery-source/">10 Things I learned From jQuery Source</a>
+and <a href="http://www.paulirish.com/2011/11-more-things-i-learned-from-the-jquery-source/">11 More Things I learned From jQuery source</a>.
+I try not to overlap with ideas he has already explained unless they are crucial to what I am discussing below.</p>
+
+<h2>How jQuery is built</h2>
+
+<h3>TODO</h3>
+
+<h2>jQuery Alias</h2>
+
+<p> You&#8217;re probably familiar <code>$</code> variable which is often used for <a href="http://learn.jquery.com/using-jquery-core/selecting-elements/">selecting DOM Elements</a>
+ like so <code>$("#awesomeID")</code></p>
+
+<p> In fact, the <code>$</code> is  actual just an alias for <code>jQuery</code>, so you can also use <code>jQuery("#awesomeID")</code>
+ instead of <code>$("#awesomeID")</code>.</p>
+
+<p>The related <a href="https://github.com/jquery/jquery/blob/master/src/exports/global.js#L28">line</a> within the codebase is</p>
+
+<figure class='code'><figcaption><span>jQuery aliasing  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nb">window</span><span class="p">.</span><span class="nx">jQuery</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">$</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>Source Code:</strong> <a href="https://github.com/jquery/jquery/blob/master/src/exports/global.js">src/exports/global.js</a></p>
+
+<p>Variables at the global scope are automatically attached to the <code>window</code> object. Similarly if you want to create a global from
+a variable from in an inner scope, add it to the window object.</p>
+
+<p>Since the jQuery codebase is encapsulated in an <a href="http://benalman.com/news/2010/11/immediately-invoked-function-expression/">IIFE</a>
+to avoid polluting the global namespace, <code>jQuery</code> and <code>$</code> are attached to the window object to export
+it as a global.</p>
+
+<figure class='code'><figcaption><span>Export jQuery and $ to Global Scope  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="c1">// Immediately Invoked Function Expression (IIFE) to encapsulate code base</span>
+</span><span class='line'>    <span class="c1">// ...</span>
+</span><span class='line'>    <span class="nb">window</span><span class="p">.</span><span class="nx">jQuery</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">$</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">;</span> <span class="c1">// create alias and export global variables</span>
+</span><span class='line'>    <span class="c1">// ...</span>
+</span><span class='line'><span class="p">})();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Please also note that other libraries such as <a href="http://prototypejs.org/">prototype</a> do also use
+<code>$</code> as a variable, so if you are using  <code>$</code> in jQuery and other libraries refer to
+jQuery&#8217;s documentation on <a href="http://learn.jquery.com/using-jquery-core/avoid-conflicts-other-libraries/">avoid conflicts with other libraries</a>.</p>
+
+<h2>Prototype Alias</h2>
+
+<p>If you&#8217;ve ever tried creating you&#8217;re own <a href="http://learn.jquery.com/plugins/basic-plugin-creation/">jQuery plugin</a>
+you&#8217;ll notice that you add the plugin to <code>$.fn</code>.</p>
+
+<p>As an example for <a href="http://learn.jquery.com/plugins/basic-plugin-creation/">jQuery&#8217;s plugin tutorial</a>,
+creating a plugin called <code>greenify</code> that makes retrieved text green would work like so:</p>
+
+<figure class='code'><figcaption><span>jQuery example plugin: greenify  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>    <span class="nx">$</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">greenify</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">css</span><span class="p">(</span> <span class="s2">&quot;color&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span> <span class="p">);</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'>    <span class="nx">$</span><span class="p">(</span> <span class="s2">&quot;a&quot;</span> <span class="p">).</span><span class="nx">greenify</span><span class="p">();</span> <span class="c1">// Makes all the links green.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In fact creating a plugin actually attaches greenify to jQuery&#8217;s <code>prototype</code>, because <code>$.fn</code> is an alias for prototype.
+Recall that an object inherit methods and properties from their <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Inheritance_and_the_prototype_chain">prototype</a>.
+Since, you&#8217;re plugin is attached to the prototype, you can invoke the plugin after creating you&#8217;re jQuery instance.</p>
+
+<p>The <a href="https://github.com/jquery/jquery/blob/master/src/core.js#L39">related line</a> that creates this aliasing is as follows:</p>
+
+<figure class='code'><figcaption><span>jQuery.prototype aliasing  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// ...</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><a href="https://github.com/jquery/jquery/blob/master/src/core.js#L39">Source Code</a></p>
+
+<p>Just to verify that jQuery.fn is indeed an alias for jQuery.prototype, we can check that
+their memory addresses are equal.</p>
+
+<figure class='code'><figcaption><span>verify jQuery.fn is an alias for jQuery.prototype  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span> <span class="o">===</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">prototype</span> <span class="c1">// true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Using <code>fn</code> as an alias for <code>prototype</code> is a very convenient shorthand.
+I believe <code>fn</code> (function) also makes sense semantically because when you
+are creating a plugin, you are essentially adding another method to the jQuery Object.</p>
+
+<h2>Method Chaining</h2>
+
+<p>Many of jQuery&#8217;s method&#8217;s return <code>this</code> (referring to the jQuery object)</p>
+
+<p>For example <strong>addClass</strong></p>
+
+<figure class='code'><figcaption><span>addClass returns this </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>    <span class="nx">addClass</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">value</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// ...</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><a href="https://github.com/jquery/jquery/blob/master/src/attributes/classes.js#L10-L52"><strong>Source Code</strong></a></p>
+
+<p>Since <code>this</code> is a reference to the jQuery object, when a method returns <code>this</code>, you
+can immediately invoke another method like so:</p>
+
+<figure class='code'><figcaption><span>Method Chaining Example  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;.box&quot;</span><span class="p">).</span><span class="nx">addClass</span><span class="p">(</span><span class="s2">&quot;red&quot;</span><span class="p">).</span><span class="nx">css</span><span class="p">(</span><span class="s2">&quot;opacity&quot;</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>jQuery Constructor</h2>
+
+<p>Every time you invoke <code>jQuery</code> or <code>$</code>, you are invoking a constructor.
+Often times you initialize an object by invoking the constructor with the <code>new</code> keyword.
+jQuery hides this by calling <code>new jQuery.fn.init(selector, context)</code> internally, when <code>jQuery</code> is invoked.</p>
+
+<figure class='code'><figcaption><span>jQuery Constructor  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// Define a local copy of jQuery</span>
+</span><span class='line'><span class="nx">jQuery</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">selector</span><span class="p">,</span> <span class="nx">context</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// The jQuery object is actually just the init constructor &#39;enhanced&#39;</span>
+</span><span class='line'>    <span class="c1">// Need init if jQuery is called (just allow error to be thrown if not included)</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">new</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span> <span class="nx">selector</span><span class="p">,</span> <span class="nx">context</span> <span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>Source Code:</strong> <a href="https://github.com/jquery/jquery/blob/master/src/core.js#L19-L24">src/core.js</a></p>
+
+<p>Since <strong>jQuery.fn.init</strong> is the internal constructor that is used to initialize the jQuery object,
+the prototype of init</p>
+
+<figure class='code'><figcaption><span>Set fn.init.prototype to jQuery.fn </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// Give the init function the jQuery prototype for later instantiation</span>
+</span><span class='line'><span class="nx">init</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// verify that they are indeed equal</span>
+</span><span class='line'><span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">init</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">===</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span> <span class="o">&amp;&amp;</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span> <span class="o">===</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">prototype</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>Source Code</strong><a href="https://github.com/jquery/jquery/blob/master/src/core/init.js#L118-L119">src/core/init.js</a></p>
+
+<h3>Function Overloading</h3>
+
+<p>Many programming languages support a feature known as <a href="http://msdn.microsoft.com/en-us/library/5dhe1hce.aspx"><strong>function overloading</strong></a>  <br/>
+which allows for more than one function of the same name in the same scope as long as they differ by certain criteria.
+According to this <a href="http://msdn.microsoft.com/en-us/library/5dhe1hce.aspx">function overloading table</a> from Microsoft,
+the parts of a function declaration that are used to differentiate between functions within the same scope
+include <strong>number of arguments</strong>, <strong>type of arguments</strong>, <strong>presence or absence of ellipsis</strong>  and <strong>const or volatile</strong>.</p>
+
+<p>Although this feature is not explicitly supported in JavaScript, John Resig&#8217;s describe a method for <a href="http://ejohn.org/blog/javascript-method-overloading/">simulating overloading by number of arguments</a>.</p>
+
+<p>jQuery also supports function overloading by checking the type of arguments and the <a href="http://api.jquery.com/jQuery/">jQuery() documentation</a>
+discusses such usage in more detail.</p>
+
+<p>Notice the <strong>// HANDLE </strong> comments within the source code
+that account for all the different cases.</p>
+
+<figure class='code'><figcaption><span>jQuery.fn.init  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">init</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">init</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">selector</span><span class="p">,</span> <span class="nx">context</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">match</span><span class="p">,</span> <span class="nx">elem</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// HANDLE: $(&quot;&quot;), $(null), $(undefined), $(false)</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">selector</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Handle HTML strings</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">selector</span> <span class="o">===</span> <span class="s2">&quot;string&quot;</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span> <span class="nx">selector</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">===</span> <span class="s2">&quot;&lt;&quot;</span> <span class="o">&amp;&amp;</span>
+</span><span class='line'>                <span class="nx">selector</span><span class="p">[</span> <span class="nx">selector</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span> <span class="p">]</span> <span class="o">===</span> <span class="s2">&quot;&gt;&quot;</span> <span class="o">&amp;&amp;</span>
+</span><span class='line'>                <span class="nx">selector</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;=</span> <span class="mi">3</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>                <span class="c1">// Assume that strings that start and end with &lt;&gt; are HTML and skip the regex check</span>
+</span><span class='line'>                <span class="nx">match</span> <span class="o">=</span> <span class="p">[</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">selector</span><span class="p">,</span> <span class="kc">null</span> <span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>                <span class="nx">match</span> <span class="o">=</span> <span class="nx">rquickExpr</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span> <span class="nx">selector</span> <span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="c1">// Match html or make sure no context is specified for #id</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span> <span class="nx">match</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">||</span> <span class="o">!</span><span class="nx">context</span><span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>                <span class="c1">// HANDLE: $(html) -&gt; $(array)</span>
+</span><span class='line'>                <span class="k">if</span> <span class="p">(</span> <span class="nx">match</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">context</span> <span class="o">=</span> <span class="nx">context</span> <span class="k">instanceof</span> <span class="nx">jQuery</span> <span class="o">?</span> <span class="nx">context</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">:</span> <span class="nx">context</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>                    <span class="c1">// Option to run scripts is true for back-compat</span>
+</span><span class='line'>                    <span class="c1">// Intentionally let the error be thrown if parseHTML is not present</span>
+</span><span class='line'>                    <span class="nx">jQuery</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span> <span class="k">this</span><span class="p">,</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">parseHTML</span><span class="p">(</span>
+</span><span class='line'>                        <span class="nx">match</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+</span><span class='line'>                        <span class="nx">context</span> <span class="o">&amp;&amp;</span> <span class="nx">context</span><span class="p">.</span><span class="nx">nodeType</span> <span class="o">?</span> <span class="nx">context</span><span class="p">.</span><span class="nx">ownerDocument</span> <span class="o">||</span> <span class="nx">context</span> <span class="o">:</span> <span class="nb">document</span><span class="p">,</span>
+</span><span class='line'>                        <span class="kc">true</span>
+</span><span class='line'>                    <span class="p">)</span> <span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>                    <span class="c1">// HANDLE: $(html, props)</span>
+</span><span class='line'>                    <span class="k">if</span> <span class="p">(</span> <span class="nx">rsingleTag</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">match</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">isPlainObject</span><span class="p">(</span> <span class="nx">context</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                        <span class="k">for</span> <span class="p">(</span> <span class="nx">match</span> <span class="k">in</span> <span class="nx">context</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                            <span class="c1">// Properties of context are called as methods if possible</span>
+</span><span class='line'>                            <span class="k">if</span> <span class="p">(</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span> <span class="k">this</span><span class="p">[</span> <span class="nx">match</span> <span class="p">]</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                <span class="k">this</span><span class="p">[</span> <span class="nx">match</span> <span class="p">](</span> <span class="nx">context</span><span class="p">[</span> <span class="nx">match</span> <span class="p">]</span> <span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>                            <span class="c1">// ...and otherwise set as attributes</span>
+</span><span class='line'>                            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>                                <span class="k">this</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span> <span class="nx">match</span><span class="p">,</span> <span class="nx">context</span><span class="p">[</span> <span class="nx">match</span> <span class="p">]</span> <span class="p">);</span>
+</span><span class='line'>                            <span class="p">}</span>
+</span><span class='line'>                        <span class="p">}</span>
+</span><span class='line'>                    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>                    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>                <span class="c1">// HANDLE: $(#id)</span>
+</span><span class='line'>                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">elem</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span> <span class="nx">match</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>                    <span class="c1">// Support: Blackberry 4.6</span>
+</span><span class='line'>                    <span class="c1">// gEBID returns nodes no longer in the document (#6963)</span>
+</span><span class='line'>                    <span class="k">if</span> <span class="p">(</span> <span class="nx">elem</span> <span class="o">&amp;&amp;</span> <span class="nx">elem</span><span class="p">.</span><span class="nx">parentNode</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                        <span class="c1">// Inject the element directly into the jQuery object</span>
+</span><span class='line'>                        <span class="k">this</span><span class="p">.</span><span class="nx">length</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>                        <span class="k">this</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nx">elem</span><span class="p">;</span>
+</span><span class='line'>                    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>                    <span class="k">this</span><span class="p">.</span><span class="nx">context</span> <span class="o">=</span> <span class="nb">document</span><span class="p">;</span>
+</span><span class='line'>                    <span class="k">this</span><span class="p">.</span><span class="nx">selector</span> <span class="o">=</span> <span class="nx">selector</span><span class="p">;</span>
+</span><span class='line'>                    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="c1">// HANDLE: $(expr, $(...))</span>
+</span><span class='line'>            <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">context</span> <span class="o">||</span> <span class="nx">context</span><span class="p">.</span><span class="nx">jquery</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                <span class="k">return</span> <span class="p">(</span> <span class="nx">context</span> <span class="o">||</span> <span class="nx">rootjQuery</span> <span class="p">).</span><span class="nx">find</span><span class="p">(</span> <span class="nx">selector</span> <span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="c1">// HANDLE: $(expr, context)</span>
+</span><span class='line'>            <span class="c1">// (which is just equivalent to: $(context).find(expr)</span>
+</span><span class='line'>            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>                <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">constructor</span><span class="p">(</span> <span class="nx">context</span> <span class="p">).</span><span class="nx">find</span><span class="p">(</span> <span class="nx">selector</span> <span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// HANDLE: $(DOMElement)</span>
+</span><span class='line'>        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">selector</span><span class="p">.</span><span class="nx">nodeType</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">this</span><span class="p">.</span><span class="nx">context</span> <span class="o">=</span> <span class="k">this</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nx">selector</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">this</span><span class="p">.</span><span class="nx">length</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// HANDLE: $(function)</span>
+</span><span class='line'>        <span class="c1">// Shortcut for document ready</span>
+</span><span class='line'>        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span> <span class="nx">selector</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="nx">rootjQuery</span><span class="p">.</span><span class="nx">ready</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">?</span>
+</span><span class='line'>                <span class="nx">rootjQuery</span><span class="p">.</span><span class="nx">ready</span><span class="p">(</span> <span class="nx">selector</span> <span class="p">)</span> <span class="o">:</span>
+</span><span class='line'>                <span class="c1">// Execute immediately if ready is not present</span>
+</span><span class='line'>                <span class="nx">selector</span><span class="p">(</span> <span class="nx">jQuery</span> <span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span> <span class="nx">selector</span><span class="p">.</span><span class="nx">selector</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">this</span><span class="p">.</span><span class="nx">selector</span> <span class="o">=</span> <span class="nx">selector</span><span class="p">.</span><span class="nx">selector</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">this</span><span class="p">.</span><span class="nx">context</span> <span class="o">=</span> <span class="nx">selector</span><span class="p">.</span><span class="nx">context</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">makeArray</span><span class="p">(</span> <span class="nx">selector</span><span class="p">,</span> <span class="k">this</span> <span class="p">);</span>
+</span><span class='line'>    <span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>Source:</strong> <a href="https://github.com/jquery/jquery/blob/master/src/core/init.js#L16-L116">src/core/init.js</a></p>
+
+<h3>Constuctor Walkthroughs</h3>
+
+<h4>TODO</h4>
+
+<figure class='code'><figcaption><span>jQuery.fn.find  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">find</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">selector</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">len</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">ret</span> <span class="o">=</span> <span class="p">[],</span>
+</span><span class='line'>            <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">selector</span> <span class="o">!==</span> <span class="s2">&quot;string&quot;</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">pushStack</span><span class="p">(</span> <span class="nx">jQuery</span><span class="p">(</span> <span class="nx">selector</span> <span class="p">).</span><span class="nx">filter</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>                <span class="k">for</span> <span class="p">(</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                    <span class="k">if</span> <span class="p">(</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span> <span class="nx">self</span><span class="p">[</span> <span class="nx">i</span> <span class="p">],</span> <span class="k">this</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                        <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class='line'>                    <span class="p">}</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>            <span class="p">})</span> <span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">for</span> <span class="p">(</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">jQuery</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span> <span class="nx">selector</span><span class="p">,</span> <span class="nx">self</span><span class="p">[</span> <span class="nx">i</span> <span class="p">],</span> <span class="nx">ret</span> <span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Needed because $( selector, context ) becomes $( context ).find( selector )</span>
+</span><span class='line'>        <span class="nx">ret</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">pushStack</span><span class="p">(</span> <span class="nx">len</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="o">?</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">unique</span><span class="p">(</span> <span class="nx">ret</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">ret</span> <span class="p">);</span>
+</span><span class='line'>        <span class="nx">ret</span><span class="p">.</span><span class="nx">selector</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">selector</span> <span class="o">?</span> <span class="k">this</span><span class="p">.</span><span class="nx">selector</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="nx">selector</span> <span class="o">:</span> <span class="nx">selector</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">ret</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>jQuery.pushStack  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>    <span class="c1">// Take an array of elements and push it onto the stack</span>
+</span><span class='line'>    <span class="c1">// (returning the new matched element set)</span>
+</span><span class='line'>    <span class="nx">pushStack</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">elems</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Build a new jQuery matched element set</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">ret</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">constructor</span><span class="p">(),</span> <span class="nx">elems</span> <span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Add the old object onto the stack (as a reference)</span>
+</span><span class='line'>        <span class="nx">ret</span><span class="p">.</span><span class="nx">prevObject</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>        <span class="nx">ret</span><span class="p">.</span><span class="nx">context</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">context</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Return the newly-formed element set</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">ret</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">},</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>jQuery.merge  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">merge</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">first</span><span class="p">,</span> <span class="nx">second</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">len</span> <span class="o">=</span> <span class="o">+</span><span class="nx">second</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">i</span> <span class="o">=</span> <span class="nx">first</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">for</span> <span class="p">(</span> <span class="p">;</span> <span class="nx">j</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="nx">j</span><span class="o">++</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">first</span><span class="p">[</span> <span class="nx">i</span><span class="o">++</span> <span class="p">]</span> <span class="o">=</span> <span class="nx">second</span><span class="p">[</span> <span class="nx">j</span> <span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">first</span><span class="p">.</span><span class="nx">length</span> <span class="o">=</span> <span class="nx">i</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">first</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>jQuery merge</p>
+
+<h2>Static Methods</h2>
+
+<p>jQuery has <a href="http://en.wikipedia.org/wiki/Method_%28computer_programming%29#Static_methods">static methods</a>
+which do not require an instance of jQuery to operate.
+Many of these <a href="https://github.com/jquery/jquery/blob/master/src/core.js#L191-L460">methods</a> are utility methods
+such as <strong>isArray</strong> or <strong>each</strong>.</p>
+
+<figure class='code'><figcaption><span>Static Method Example: $.each  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">$</span><span class="p">.</span><span class="nx">each</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">el</span><span class="p">){</span>
+</span><span class='line'>   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">el</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'><span class="c1">// 1</span>
+</span><span class='line'><span class="c1">// 2</span>
+</span><span class='line'><span class="c1">// 3</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>An interesting thing to note is that there are <strong>static methods</strong>
+and <strong>instance methods</strong> in the codebase that have the same name.</p>
+
+<p>Many of these instance methods also invoke the static methods
+within their definition.</p>
+
+<figure class='code'><figcaption><span>jQuery.fn.each instance method  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// ...</span>
+</span><span class='line'><span class="nx">each</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">callback</span><span class="p">,</span> <span class="nx">args</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="k">this</span><span class="p">,</span> <span class="nx">callback</span><span class="p">,</span> <span class="nx">args</span> <span class="p">);</span> <span class="c1">// use static each</span>
+</span><span class='line'><span class="p">},</span>
+</span><span class='line'><span class="c1">// ...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>Source:</strong> <a href="https://github.com/jquery/jquery/blob/master/src/core.js#L85-L87">jQuery.fn.each</a> <a href="https://github.com/jquery/jquery/blob/master/src/core.js#L278-L326">jQuery.each</a></p>
+
+<figure class='code'><figcaption><span>jQuery.fn.find instance method  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">find</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">selector</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">len</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">ret</span> <span class="o">=</span> <span class="p">[],</span>
+</span><span class='line'>        <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// ...</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">jQuery</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span> <span class="nx">selector</span><span class="p">,</span> <span class="nx">self</span><span class="p">[</span> <span class="nx">i</span> <span class="p">],</span> <span class="nx">ret</span> <span class="p">);</span> <span class="c1">// use static jQuery.find</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// ...</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>Source:</strong> <a href="https://github.com/jquery/jquery/blob/master/src/selector-sizzle.js#L6">jQuery.find</a>  <a href="https://github.com/jquery/jquery/blob/master/src/traversing/findFilter.js#L55-L78">jQuery.fn.find</a></p>
+
+<h2>Implicit Iteration</h2>
+
+<h3>TODO</h3>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Anthony Su</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-10-27T17:03:00-07:00" pubdate data-updated="true">Oct 27<span>th</span>, 2014</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://radialglo.github.com/blog/2014/10/27/additional-things-i-learned-from-jquery-source/" data-via="" data-counturl="http://radialglo.github.com/blog/2014/10/27/additional-things-i-learned-from-jquery-source/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/08/07/understanding-the-intuition-of-easing/" title="Previous Post: Understanding the Intuition of Easing">&laquo; Understanding the Intuition of Easing</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/10/27/additional-things-i-learned-from-jquery-source/">Additional Things I learned from jQuery Source</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/08/07/understanding-the-intuition-of-easing/">Understanding the Intuition of Easing</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/05/24/what-i-learned-from-launching-version-2-of-my-portfolio/">What I learned from launching version 2 of my portfolio</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/29/attribute-nodes-of-html-elements/">Attribute Nodes of HTML Elements</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/18/dom-versus-dom-tree/">DOM versus DOM Tree</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Anthony Su -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'radialglo';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://radialglo.github.com/blog/2014/10/27/additional-things-i-learned-from-jquery-source/';
+        var disqus_url = 'http://radialglo.github.com/blog/2014/10/27/additional-things-i-learned-from-jquery-source/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
