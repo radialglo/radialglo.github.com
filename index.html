@@ -206,7 +206,7 @@ Since, you&#8217;re plugin is attached to the prototype, you can invoke the plug
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p><a href="https://github.com/jquery/jquery/blob/master/src/core.js#L39">Source Code</a></p>
+<p><strong>Source Code:</strong> <a href="https://github.com/jquery/jquery/blob/master/src/core.js#L39">src/core.js</a></p>
 
 <p>Just to verify that jQuery.fn is indeed an alias for jQuery.prototype, we can check that
 their memory addresses are equal.</p>
@@ -291,7 +291,7 @@ the prototype of init</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p><strong>Source Code</strong><a href="https://github.com/jquery/jquery/blob/master/src/core/init.js#L118-L119">src/core/init.js</a></p>
+<p><strong>Source Code:</strong> <a href="https://github.com/jquery/jquery/blob/master/src/core/init.js#L118-L119">src/core/init.js</a></p>
 
 <h3>Function Overloading</h3>
 
@@ -515,7 +515,84 @@ that account for all the different cases.</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p><strong>Source:</strong> <a href="https://github.com/jquery/jquery/blob/master/src/core/init.js#L16-L116">src/core/init.js</a></p>
+<p><strong>Source Code:</strong> <a href="https://github.com/jquery/jquery/blob/master/src/core/init.js#L16-L116">src/core/init.js</a></p>
+
+<h3>jQuery&#8217;s Array-like properties</h3>
+
+<p>An interesting feature of the jQuery is that <strong>instances
+have Array like properties</strong> as each instance
+has a <strong>length property</strong> and stores its elements in <strong>numeric
+indices</strong> for its elements.</p>
+
+<p>jQuery&#8217;s Array-like behavior meshes well with method chaining,
+because for method&#8217;s that return <code>this</code> or the instance,
+you now have the option to not only call another instance method
+but also to access selected elements.</p>
+
+<figure class='code'><figcaption><span>Method Chaining and jQuery&#8217;s Array-like properties </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// Assume we have html divs with a box class</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// we can call a method after the constructor returns</span>
+</span><span class='line'><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;.box&quot;</span><span class="p">).</span><span class="nx">addClass</span><span class="p">(</span><span class="s2">&quot;red&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// we can access an element</span>
+</span><span class='line'><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;.box&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="c1">// get the first box</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// we can chain methods to gether</span>
+</span><span class='line'><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;.box&quot;</span><span class="p">).</span><span class="nx">addClass</span><span class="p">(</span><span class="s2">&quot;red&quot;</span><span class="p">).</span><span class="nx">css</span><span class="p">(</span><span class="s2">&quot;opacity&quot;</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// add class to all boxes and get the first elemeent</span>
+</span><span class='line'><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;.box&quot;</span><span class="p">).</span><span class="nx">addClass</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>jQuery has an instance method called <a href="http://api.jquery.com/get/">get</a>
+that retrieves the elements matched from jQuery,
+using the array like properties we discussed above.</p>
+
+<p>Note that this is different static <a href="http://api.jquery.com/jquery.get/">jQuery.get</a>
+that is used to laod data from the server with a HTTP GET request.</p>
+
+<figure class='code'><figcaption><span>jQuery.fn.get   </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// Get the Nth element in the matched element set OR</span>
+</span><span class='line'><span class="c1">// Get the whole matched element set as a clean array</span>
+</span><span class='line'><span class="nx">get</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">num</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">num</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">?</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Return just the one element from the set</span>
+</span><span class='line'>        <span class="p">(</span> <span class="nx">num</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">?</span> <span class="k">this</span><span class="p">[</span> <span class="nx">num</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">length</span> <span class="p">]</span> <span class="o">:</span> <span class="k">this</span><span class="p">[</span> <span class="nx">num</span> <span class="p">]</span> <span class="p">)</span> <span class="o">:</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Return all the elements in a clean array</span>
+</span><span class='line'>        <span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="k">this</span> <span class="p">);</span>
+</span><span class='line'><span class="p">},</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>Source Code:</strong> <a href="https://github.com/jquery/jquery/blob/master/src/core.js#L55-L65">src/core.js</a></p>
 
 <h3>Constuctor Walkthroughs</h3>
 
