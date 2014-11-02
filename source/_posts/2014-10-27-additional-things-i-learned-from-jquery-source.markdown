@@ -183,7 +183,7 @@ which will handle writing the text to the relevant destination.
 
 **Source Code:**[build/tasks/build.js config.out](https://github.com/jquery/jquery/blob/master/build/tasks/build.js#L245-L259)
 
-Lastly there is another tasks called [custom](https://github.com/jquery/jquery/blob/master/build/tasks/build.js#L287) that handles the custom exclusion/inclusion
+Lastly there is another task called [custom](https://github.com/jquery/jquery/blob/master/build/tasks/build.js#L287) that handles the custom exclusion/inclusion
 of certain modules.
 
 
@@ -514,9 +514,61 @@ get: function( num ) {
 
 ### Constuctor Walkthroughs
 
+Now we'll discuss a few applications of the jQuery 
+constructor.
+For a more detailed view of the meat of the constructor 
+refer to [src/core/init](https://github.com/jquery/jquery/blob/master/src/core/init.js#L16-L116).
 
-#### TODO
+First of all if nothing is passed to the constructor,
+the current instance is simply returned.
 
+{% codeblock falsy values passed to jQuery constuctor lang:js %}
+
+// HANDLE: $(""), $(null), $(undefined), $(false)
+if ( !selector ) {
+    return this;
+}
+
+{% endcodeblock %}
+
+Next the constructor  handles strings.
+At first the function checks if the string contains brackets
+and then uses a regex expression to check whether or not the 
+string matches html or contains an id.
+
+The regex expression is called ```rquickExpr```
+
+{% codeblock rquickExpr lang:js %}
+
+// A simple way to check for HTML strings
+// Prioritize #id over <tag> to avoid XSS via location.hash (#9521)
+// Strict HTML recognition (#11290: must start with <)
+rquickExpr = /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]*))$/,
+
+{% endcodeblock %}
+**Source** [src/core/init](https://github.com/jquery/jquery/blob/master/src/core/init.js#L11-L13)
+
+The example I will first be discussion is a simple
+selection for a class.
+
+#### Selector selector
+{% codeblock  Find selector lang:js%}
+    $(".box")
+{% endcodeblock %}
+Since this selector will not match the regex described above,
+the search will the constructor will invoke ```jQuery.fn.find```
+to locate the search the document for the relevant elements
+
+{% codeblock invoke jQuery.fn.find lang:js %}
+// HANDLE: $(expr, $(...))
+    if (...) {
+    } else if ( !context || context.jquery ) {
+        return ( context || rootjQuery ).find( selector );
+    }
+{% endcodeblock %}
+
+
+This is the function defintion for ```jQuery.fn.find```.
 {% codeblock jQuery.fn.find lang:js %}
 jQuery.fn.extend({
     find: function( selector ) {
@@ -536,7 +588,7 @@ jQuery.fn.extend({
         }
 
         for ( i = 0; i < len; i++ ) {
-            jQuery.find( selector, self[ i ], ret );
+            jQuery.find( selector, self[ i ], ret ); // invoke sizzle
         }
 
         // Needed because $( selector, context ) becomes $( context ).find( selector )
@@ -546,6 +598,21 @@ jQuery.fn.extend({
     }
 });
 {% endcodeblock %}
+
+We pass a string to jQuery.fn.find and then the static method
+jQuery.find is invoked. [jQuery.find](https://github.com/jquery/jquery/blob/master/src/selector-sizzle.js#L6)
+is really just an alias for [Sizzle](http://sizzlejs.com/), the selector engine.
+
+The results of items found by Sizzle are stored as an array in the ```ret```
+variable.
+
+That array is then passed into to the function ```pushStack```
+which merges a new instance of jQuery ```this.constructor```
+with the current array of matched elements, ```elements```.
+
+As we discussed above, invoking the constructor with no values,
+will just immediately return the instance of jQuery.
+
 {% codeblock jQuery.pushStack lang:js %}
     // Take an array of elements and push it onto the stack
     // (returning the new matched element set)
@@ -562,6 +629,14 @@ jQuery.fn.extend({
         return ret;
     },
 {% endcodeblock %}
+
+jQuery.merge  copies over the second array into 
+the first array. In this case, the elements returned from jQuery's 
+sizzle are copied over to the instance (```this```).
+
+Notice that this form of merging is consistent
+with **jQuery's Array-like properties** discussed above.
+
 {% codeblock jQuery.merge lang:js %}
 merge: function( first, second ) {
         var len = +second.length,
@@ -577,7 +652,7 @@ merge: function( first, second ) {
         return first;
 }
 {% endcodeblock %}
-jQuery merge
+**Source:** [src/core.js](https://github.com/jquery/jquery/blob/master/src/core.js#L357-L369)
 
 
 
@@ -636,6 +711,12 @@ as ```addClass``` iterate over all the elements
 that were selected, which makes the API very to use
 especially for first time coders.
 
+{% codeblock Sample Use Case Implicit Iteration lang:js %}
+
+$(".box").addClass("red"); // add red class to all elements that contain the box class
+
+{% endcodeblock %}
+
 Given our understanding of **static methods** and **jQuery's Array-like Properties**,
 implementing **implicit iteration** (automatic iteration hidden from the API level)
 involves iterating over the **this** object reference that contains all the elements.
@@ -651,7 +732,7 @@ for ( ; i < len; i++ ) {
 
 **Source Code:** [src/attributes/classes.js](https://github.com/jquery/jquery/blob/master/src/attributes/classes.js#L27-L49)
 
-If you are using the [addClass function](http://api.jquery.com/addclass/#addClass-function),
+If you are [passing a function to addClass](http://api.jquery.com/addclass/#addClass-function),
 jQuery uses the ```this.fn.each``` to iterate over the object.
 This is because ```this.fn.each``` uses ```jQuery.each```
 which invokes the function on each element.
