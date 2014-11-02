@@ -356,7 +356,7 @@ which will handle writing the text to the relevant destination.</p>
 
 <p><strong>Source Code:</strong><a href="https://github.com/jquery/jquery/blob/master/build/tasks/build.js#L245-L259">build/tasks/build.js config.out</a></p>
 
-<p>Lastly there is another tasks called <a href="https://github.com/jquery/jquery/blob/master/build/tasks/build.js#L287">custom</a> that handles the custom exclusion/inclusion
+<p>Lastly there is another task called <a href="https://github.com/jquery/jquery/blob/master/build/tasks/build.js#L287">custom</a> that handles the custom exclusion/inclusion
 of certain modules.</p>
 
 <h2>jQuery Alias</h2>
@@ -852,7 +852,77 @@ that is used to load data from the server with a HTTP GET request.</p>
 
 <h3>Constuctor Walkthroughs</h3>
 
-<h4>TODO</h4>
+<p>Now we&#8217;ll discuss a few applications of the jQuery
+constructor.
+For a more detailed view of the meat of the constructor
+refer to <a href="https://github.com/jquery/jquery/blob/master/src/core/init.js#L16-L116">src/core/init</a>.</p>
+
+<p>First of all if nothing is passed to the constructor,
+the current instance is simply returned.</p>
+
+<figure class='code'><figcaption><span>falsy values passed to jQuery constuctor  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// HANDLE: $(&quot;&quot;), $(null), $(undefined), $(false)</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">selector</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Next the constructor  handles strings.
+At first the function checks if the string contains brackets
+and then uses a regex expression to check whether or not the
+string matches html or contains an id.</p>
+
+<p>The regex expression is called <code>rquickExpr</code></p>
+
+<figure class='code'><figcaption><span>rquickExpr  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// A simple way to check for HTML strings</span>
+</span><span class='line'><span class="c1">// Prioritize #id over &lt;tag&gt; to avoid XSS via location.hash (#9521)</span>
+</span><span class='line'><span class="c1">// Strict HTML recognition (#11290: must start with &lt;)</span>
+</span><span class='line'><span class="nx">rquickExpr</span> <span class="o">=</span> <span class="sr">/^(?:\s*(&lt;[\w\W]+&gt;)[^&gt;]*|#([\w-]*))$/</span><span class="p">,</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>Source</strong> <a href="https://github.com/jquery/jquery/blob/master/src/core/init.js#L11-L13">src/core/init</a></p>
+
+<p>The example I will first be discussion is a simple
+selection for a class.</p>
+
+<h4>Selector selector</h4>
+
+<figure class='code'><figcaption><span>Find selector </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>    <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;.box&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Since this selector will not match the regex described above,
+the search will the constructor will invoke <code>jQuery.fn.find</code>
+to locate the search the document for the relevant elements</p>
+
+<figure class='code'><figcaption><span>invoke jQuery.fn.find  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// HANDLE: $(expr, $(...))</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(...)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">context</span> <span class="o">||</span> <span class="nx">context</span><span class="p">.</span><span class="nx">jquery</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">(</span> <span class="nx">context</span> <span class="o">||</span> <span class="nx">rootjQuery</span> <span class="p">).</span><span class="nx">find</span><span class="p">(</span> <span class="nx">selector</span> <span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is the function defintion for <code>jQuery.fn.find</code>.</p>
 
 <figure class='code'><figcaption><span>jQuery.fn.find  </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -900,7 +970,7 @@ that is used to load data from the server with a HTTP GET request.</p>
 </span><span class='line'>        <span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'>        <span class="k">for</span> <span class="p">(</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="nx">jQuery</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span> <span class="nx">selector</span><span class="p">,</span> <span class="nx">self</span><span class="p">[</span> <span class="nx">i</span> <span class="p">],</span> <span class="nx">ret</span> <span class="p">);</span>
+</span><span class='line'>            <span class="nx">jQuery</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span> <span class="nx">selector</span><span class="p">,</span> <span class="nx">self</span><span class="p">[</span> <span class="nx">i</span> <span class="p">],</span> <span class="nx">ret</span> <span class="p">);</span> <span class="c1">// invoke sizzle</span>
 </span><span class='line'>        <span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'>        <span class="c1">// Needed because $( selector, context ) becomes $( context ).find( selector )</span>
@@ -912,7 +982,19 @@ that is used to load data from the server with a HTTP GET request.</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
+<p>We pass a string to jQuery.fn.find and then the static method
+jQuery.find is invoked. <a href="https://github.com/jquery/jquery/blob/master/src/selector-sizzle.js#L6">jQuery.find</a>
+is really just an alias for <a href="http://sizzlejs.com/">Sizzle</a>, the selector engine.</p>
 
+<p>The results of items found by Sizzle are stored as an array in the <code>ret</code>
+variable.</p>
+
+<p>That array is then passed into to the function <code>pushStack</code>
+which merges a new instance of jQuery <code>this.constructor</code>
+with the current array of matched elements, <code>elements</code>.</p>
+
+<p>As we discussed above, invoking the constructor with no values,
+will just immediately return the instance of jQuery.</p>
 
 <figure class='code'><figcaption><span>jQuery.pushStack  </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -946,7 +1028,12 @@ that is used to load data from the server with a HTTP GET request.</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
+<p>jQuery.merge  copies over the second array into
+the first array. In this case, the elements returned from jQuery&#8217;s
+sizzle are copied over to the instance (<code>this</code>).</p>
 
+<p>Notice that this form of merging is consistent
+with <strong>jQuery&#8217;s Array-like properties</strong> discussed above.</p>
 
 <figure class='code'><figcaption><span>jQuery.merge  </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -978,7 +1065,7 @@ that is used to load data from the server with a HTTP GET request.</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>jQuery merge</p>
+<p><strong>Source:</strong> <a href="https://github.com/jquery/jquery/blob/master/src/core.js#L357-L369">src/core.js</a></p>
 
 <h2>Static Methods</h2>
 
@@ -1064,6 +1151,12 @@ as <code>addClass</code> iterate over all the elements
 that were selected, which makes the API very to use
 especially for first time coders.</p>
 
+<figure class='code'><figcaption><span>Sample Use Case Implicit Iteration  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;.box&quot;</span><span class="p">).</span><span class="nx">addClass</span><span class="p">(</span><span class="s2">&quot;red&quot;</span><span class="p">);</span> <span class="c1">// add red class to all elements that contain the box class</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
 <p>Given our understanding of <strong>static methods</strong> and <strong>jQuery&#8217;s Array-like Properties</strong>,
 implementing <strong>implicit iteration</strong> (automatic iteration hidden from the API level)
 involves iterating over the <strong>this</strong> object reference that contains all the elements.</p>
@@ -1082,7 +1175,7 @@ involves iterating over the <strong>this</strong> object reference that contains
 
 <p><strong>Source Code:</strong> <a href="https://github.com/jquery/jquery/blob/master/src/attributes/classes.js#L27-L49">src/attributes/classes.js</a></p>
 
-<p>If you are using the <a href="http://api.jquery.com/addclass/#addClass-function">addClass function</a>,
+<p>If you are <a href="http://api.jquery.com/addclass/#addClass-function">passing a function to addClass</a>,
 jQuery uses the <code>this.fn.each</code> to iterate over the object.
 This is because <code>this.fn.each</code> uses <code>jQuery.each</code>
 which invokes the function on each element.
