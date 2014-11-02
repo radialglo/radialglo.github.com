@@ -4,7 +4,7 @@
   <title><![CDATA[Anthony Su]]></title>
   <link href="http://radialglo.github.com/atom.xml" rel="self"/>
   <link href="http://radialglo.github.com/"/>
-  <updated>2014-11-01T12:45:10-07:00</updated>
+  <updated>2014-11-02T01:31:26-07:00</updated>
   <id>http://radialglo.github.com/</id>
   <author>
     <name><![CDATA[Anthony Su]]></name>
@@ -32,11 +32,246 @@ I will be walking you through parts of the <a href="https://github.com/jquery/jq
 <p>I would also recommend taking a look at <a href="http://www.paulirish.com/">Paul Irish&#8217;s</a> related posts:
 <a href="http://www.paulirish.com/2010/10-things-i-learned-from-the-jquery-source/">10 Things I learned From jQuery Source</a>
 and <a href="http://www.paulirish.com/2011/11-more-things-i-learned-from-the-jquery-source/">11 More Things I learned From jQuery source</a>.
+Here is also a <a href="https://gist.github.com/chitsaou/4283482">github gists</a> that summarizes those videos.
 I try not to overlap with ideas he has already explained unless they are crucial to what I am discussing below.</p>
+
+<p>At the time of this writing, the version of jQuery I am exploring is <strong>v2.1.1</strong>.</p>
+
+<h2>How the development modules are structures</h2>
+
+<p>From a development perspective jQuery is broken down into a bunch
+of modules.</p>
+
+<p>These modules are defined using the <strong>Asynchronous Module Definition</strong> <a href="https://github.com/amdjs/amdjs-api/wiki/AMD">AMD</a>
+specification.</p>
+
+<p>The main file of jQuery is <a href="https://github.com/jquery/jquery/blob/master/src/jquery.js">src/jquery.js</a>
+and its relevant dependies are listed as the array in the define function.</p>
+
+<figure class='code'><figcaption><span>AMD Defintion for jQuery  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">define</span><span class="p">([</span>
+</span><span class='line'>    <span class="s2">&quot;./core&quot;</span><span class="p">,</span> <span class="c1">// refers to ./core.js</span>
+</span><span class='line'>    <span class="s2">&quot;./selector&quot;</span><span class="p">,</span> <span class="c1">// refers to ./selector.js</span>
+</span><span class='line'>    <span class="c1">// .. more dependencies</span>
+</span><span class='line'><span class="p">],</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">jQuery</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">return</span> <span class="nx">jQuery</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This way of defining modules is crucial to how these modules are
+built.</p>
+
+<p><strong>Source:</strong><a href="https://github.com/jquery/jquery/blob/master/src/jquery.js#L1-L37">src/jquery.js</a></p>
 
 <h2>How jQuery is built</h2>
 
-<h3>TODO</h3>
+<p>The <a href="https://github.com/jquery/jquery#how-to-build-your-own-jquery">README.md for jQuery</a>
+describes at a high level how the jQuery source is built.
+In particular you will need the <a href="https://www.npmjs.org/">npm</a>
+and <a href="http://gruntjs.com/getting-started">grunt</a>. Grunt is a task runner
+which allows you to automate repetitive tasks from the command line.
+Grunt also provides a development API, which jQuery uss.
+I&#8217;m going to focus on the lower levels on how jQuery is built.</p>
+
+<p>jQuery uses <a href="http://requirejs.org/">requirejs</a> to build out jQuery.
+The files that are responsible for building jQuery are stored in <a href="https://github.com/jquery/jquery/tree/master/build/tasks">build/tasks</a>.
+These are loaded by the Gruntfile:</p>
+
+<figure class='code'><figcaption><span>Load Build Tasks  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// Integrate jQuery specific tasks</span>
+</span><span class='line'><span class="nx">grunt</span><span class="p">.</span><span class="nx">loadTasks</span><span class="p">(</span> <span class="s2">&quot;build/tasks&quot;</span> <span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>Source:</strong> <a href="https://github.com/jquery/jquery/blob/master/Gruntfile.js#L156">build/tasks</a></p>
+
+<p>The relevant configuration for the tasks are also stored in the Gruntfile
+as a JavaScript object.</p>
+
+<figure class='code'><figcaption><span>Grunt Configuration  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">build</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">all</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">dest</span><span class="o">:</span> <span class="s2">&quot;dist/jquery.js&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">minimum</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>            <span class="s2">&quot;core&quot;</span><span class="p">,</span>
+</span><span class='line'>            <span class="s2">&quot;selector&quot;</span>
+</span><span class='line'>        <span class="p">],</span>
+</span><span class='line'>        <span class="c1">// Exclude specified modules if the module matching the key is removed</span>
+</span><span class='line'>        <span class="nx">removeWith</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">ajax</span><span class="o">:</span> <span class="p">[</span> <span class="s2">&quot;manipulation/_evalUrl&quot;</span><span class="p">,</span> <span class="s2">&quot;event/ajax&quot;</span> <span class="p">],</span>
+</span><span class='line'>            <span class="nx">callbacks</span><span class="o">:</span> <span class="p">[</span> <span class="s2">&quot;deferred&quot;</span> <span class="p">],</span>
+</span><span class='line'>            <span class="nx">css</span><span class="o">:</span> <span class="p">[</span> <span class="s2">&quot;effects&quot;</span><span class="p">,</span> <span class="s2">&quot;dimensions&quot;</span><span class="p">,</span> <span class="s2">&quot;offset&quot;</span> <span class="p">],</span>
+</span><span class='line'>            <span class="nx">sizzle</span><span class="o">:</span> <span class="p">[</span> <span class="s2">&quot;css/hiddenVisibleSelectors&quot;</span><span class="p">,</span> <span class="s2">&quot;effects/animatedSelector&quot;</span> <span class="p">]</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>Source:</strong> <a href="https://github.com/jquery/jquery/blob/master/Gruntfile.js#L33-L48">grunt build configuration</a></p>
+
+<p><a href="https://github.com/jquery/jquery/blob/master/build/tasks/build.js">build/tasks/build.js</a>
+registers a <a href="http://gruntjs.com/api/grunt.task#grunt.task.registermultitask">multitask</a> called <code>build</code>
+that iterates over all targets of build if none are specified when built is run on the command line: <code>grunt build</code>.</p>
+
+<figure class='code'><figcaption><span>register multitask </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">grunt</span><span class="p">.</span><span class="nx">registerMultiTask</span><span class="p">(</span>
+</span><span class='line'>        <span class="s2">&quot;build&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s2">&quot;Concatenate source, remove sub AMD definitions, &quot;</span> <span class="o">+</span>
+</span><span class='line'>            <span class="s2">&quot;(include/exclude modules with +/- flags), embed date/version&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>            <span class="c1">// ...</span>
+</span><span class='line'>        <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>Source Code:</strong> <a href="https://github.com/jquery/jquery/blob/master/build/tasks/build.js#L101-L104">build/tasks register build tasks</a></p>
+
+<p>The important line in <a href="https://github.com/jquery/jquery/blob/master/build/tasks/build.js#L270">build.js</a>
+is <code>requirejs.optimize(config, function( response ) { ...</code>
+that uses requirejs&#8217; optimize as function to build out the file.</p>
+
+<p>The configuration config that is passed to require.js optimize is also important to take a look at.
+A more detailed definition of these options is available <a href="https://github.com/jrburke/r.js/blob/master/build/example.build.js">here</a></p>
+
+<figure class='code'><figcaption><span>configuration for requirejs.optimize build for jQuery </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">config</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">baseUrl</span><span class="o">:</span> <span class="s2">&quot;src&quot;</span><span class="p">,</span> <span class="c1">// all modules are located relative to this path</span>
+</span><span class='line'>    <span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;jquery&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">out</span><span class="o">:</span> <span class="s2">&quot;dist/jquery.js&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// We have multiple minify steps</span>
+</span><span class='line'>    <span class="nx">optimize</span><span class="o">:</span> <span class="s2">&quot;none&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// Include dependencies loaded with require</span>
+</span><span class='line'>    <span class="nx">findNestedDependencies</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// Avoid breaking semicolons inserted by r.js</span>
+</span><span class='line'>    <span class="nx">skipSemiColonInsertion</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// these files are used to prepend and append </span>
+</span><span class='line'>    <span class="c1">// to optimized response</span>
+</span><span class='line'>    <span class="nx">wrap</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">startFile</span><span class="o">:</span> <span class="s2">&quot;src/intro.js&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">endFile</span><span class="o">:</span> <span class="s2">&quot;src/outro.js&quot;</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="c1">// we map the &quot;sizzle&quot; module to its actual source</span>
+</span><span class='line'>    <span class="nx">paths</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">sizzle</span><span class="o">:</span> <span class="s2">&quot;../external/sizzle/dist/sizzle&quot;</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nx">rawText</span><span class="o">:</span> <span class="p">{},</span>
+</span><span class='line'>    <span class="c1">// A function that will be called for every write to an optimized bundle</span>
+</span><span class='line'>    <span class="c1">// of modules. This allows transforms of the content before serialization.</span>
+</span><span class='line'>    <span class="c1">// convert does the heavy lifting on massaging the files :  mainly stripping out the definitions generated by requirejs</span>
+</span><span class='line'>    <span class="nx">onBuildWrite</span><span class="o">:</span> <span class="nx">convert</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>An important property to note is the property <strong>onBuildWrite</strong> and the function <strong>convert</strong> which
+is a callback that is invoked with the library is built.
+ In particular convert  mainly strips out the definitions generated by requirejs.</p>
+
+<p>The optimized contents are then passed to the <code>config.out</code> function
+which will handle writing the text to the relevant destination.</p>
+
+<figure class='code'><figcaption><span>jQuery&#8217;s config.out  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">    * Handle Final output from the optimizer</span>
+</span><span class='line'><span class="cm">    * @param {String} compiled</span>
+</span><span class='line'><span class="cm">    */</span>
+</span><span class='line'>    <span class="nx">config</span><span class="p">.</span><span class="nx">out</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">compiled</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">compiled</span> <span class="o">=</span> <span class="nx">compiled</span>
+</span><span class='line'>        <span class="c1">// Embed Version</span>
+</span><span class='line'>        <span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/@VERSION/g</span><span class="p">,</span> <span class="nx">version</span> <span class="p">)</span>
+</span><span class='line'>        <span class="c1">// Embed Date</span>
+</span><span class='line'>        <span class="c1">// yyyy-mm-ddThh:mmZ</span>
+</span><span class='line'>        <span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/@DATE/g</span><span class="p">,</span> <span class="p">(</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">()</span> <span class="p">).</span><span class="nx">toISOString</span><span class="p">().</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/:\d+\.\d+Z$/</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span> <span class="p">)</span> <span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Write concatenated source to file</span>
+</span><span class='line'>    <span class="nx">grunt</span><span class="p">.</span><span class="nx">file</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">compiled</span> <span class="p">);</span>
+</span><span class='line'>    <span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>Source Code:</strong><a href="https://github.com/jquery/jquery/blob/master/build/tasks/build.js#L245-L259">build/tasks/build.js config.out</a></p>
+
+<p>Lastly there is another tasks called <a href="https://github.com/jquery/jquery/blob/master/build/tasks/build.js#L287">custom</a> that handles the custom exclusion/inclusion
+of certain modules.</p>
 
 <h2>jQuery Alias</h2>
 
@@ -79,7 +314,7 @@ it as a global.</p>
 
 <p>Please also note that other libraries such as <a href="http://prototypejs.org/">prototype</a> do also use
 <code>$</code> as a variable, so if you are using  <code>$</code> in jQuery and other libraries refer to
-jQuery&#8217;s documentation on <a href="http://learn.jquery.com/using-jquery-core/avoid-conflicts-other-libraries/">avoid conflicts with other libraries</a>.</p>
+jQuery&#8217;s documentation on <a href="http://learn.jquery.com/using-jquery-core/avoid-conflicts-other-libraries/">avoiding conflicts with other libraries</a>.</p>
 
 <h2>Prototype Alias</h2>
 
@@ -435,6 +670,30 @@ have Array like properties</strong> as each instance
 has a <strong>length property</strong> and stores its elements in <strong>numeric
 indices</strong> for its elements.</p>
 
+<p>Here is a sample of properties from a jQuery object:</p>
+
+<figure class='code'><figcaption><span>Array-like properties from jQuery object  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="mi">0</span><span class="o">:</span> <span class="nx">div</span><span class="p">.</span><span class="nx">box</span><span class="p">,</span>
+</span><span class='line'>    <span class="mi">1</span><span class="o">:</span> <span class="nx">div</span><span class="p">.</span><span class="nx">box</span><span class="p">,</span>
+</span><span class='line'>    <span class="mi">2</span><span class="o">:</span> <span class="nx">div</span><span class="p">.</span><span class="nx">box</span><span class="p">,</span>
+</span><span class='line'>    <span class="mi">3</span><span class="o">:</span> <span class="nx">div</span><span class="p">.</span><span class="nx">box</span><span class="p">,</span>
+</span><span class='line'>    <span class="mi">4</span><span class="o">:</span> <span class="nx">div</span><span class="p">.</span><span class="nx">box</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">length</span><span class="o">:</span> <span class="mi">5</span>
+</span><span class='line'>    <span class="c1">// ...</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
 <p>jQuery&#8217;s Array-like behavior meshes well with method chaining,
 because for method&#8217;s that return <code>this</code> or the instance,
 you now have the option to not only call another instance method
@@ -470,12 +729,12 @@ but also to access selected elements.</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>jQuery has an instance method called <a href="http://api.jquery.com/get/">get</a>
+<p>jQuery also has an instance method called <a href="http://api.jquery.com/get/">get</a>
 that retrieves the elements matched from jQuery,
 using the array like properties we discussed above.</p>
 
 <p>Note that this is different static <a href="http://api.jquery.com/jquery.get/">jQuery.get</a>
-that is used to laod data from the server with a HTTP GET request.</p>
+that is used to load data from the server with a HTTP GET request.</p>
 
 <figure class='code'><figcaption><span>jQuery.fn.get   </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -714,7 +973,52 @@ within their definition.</p>
 
 <h2>Implicit Iteration</h2>
 
-<h3>TODO</h3>
+<p>Under the hood, many of jQuery&#8217;s methods such
+as <code>addClass</code> iterate over all the elements
+that were selected, which makes the API very to use
+especially for first time coders.</p>
+
+<p>Given our understanding of <strong>static methods</strong> and <strong>jQuery&#8217;s Array-like Properties</strong>,
+implementing <strong>implicit iteration</strong> (automatic iteration hidden from the API level)
+involves iterating over the <strong>this</strong> object reference that contains all the elements.</p>
+
+<figure class='code'><figcaption><span>Simple Iteration addClass  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="k">for</span> <span class="p">(</span> <span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">elem</span> <span class="o">=</span> <span class="k">this</span><span class="p">[</span> <span class="nx">i</span> <span class="p">];</span> <span class="c1">// recall that each element is stored in the this object</span>
+</span><span class='line'>    <span class="c1">// ... do some class manipulation for the element</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>Source Code:</strong> <a href="https://github.com/jquery/jquery/blob/master/src/attributes/classes.js#L27-L49">src/attributes/classes.js</a></p>
+
+<p>If you are using the <a href="http://api.jquery.com/addclass/#addClass-function">addClass function</a>,
+jQuery uses the <code>this.fn.each</code> to iterate over the object.
+This is because <code>this.fn.each</code> uses <code>jQuery.each</code>
+which invokes the function on each element.
+So in the inner line of the callback, <code>this</code> actually refers to the individual element.</p>
+
+<figure class='code'><figcaption><span>this.each iteration addClass  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="k">if</span> <span class="p">(</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span> <span class="nx">value</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span> <span class="nx">j</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">jQuery</span><span class="p">(</span> <span class="k">this</span> <span class="p">).</span><span class="nx">addClass</span><span class="p">(</span> <span class="nx">value</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="k">this</span><span class="p">,</span> <span class="nx">j</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">className</span> <span class="p">)</span> <span class="p">);</span> <span class="c1">// invoke function and individual method</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>Source Code:</strong> <a href="https://github.com/jquery/jquery/blob/master/src/attributes/classes.js#L17-L21">src/attributes/classes.js</a></p>
+
+<p><a href="https://github.com/jquery/jquery/blob/master/src/core.js#L279-L326">More details on jQuery.each</a></p>
 ]]></content>
   </entry>
   
