@@ -242,7 +242,7 @@ jQuery's documentation on [avoiding conflicts with other libraries](http://learn
 ## Prototype Alias
 
 
-If you've ever tried creating you're own [jQuery plugin](http://learn.jquery.com/plugins/basic-plugin-creation/)
+If you've ever tried creating your own [jQuery plugin](http://learn.jquery.com/plugins/basic-plugin-creation/)
 you'll notice that you add the plugin to ```$.fn```.
 
 As an example for [jQuery's plugin tutorial](http://learn.jquery.com/plugins/basic-plugin-creation/),
@@ -257,7 +257,7 @@ creating a plugin called ``` greenify ``` that makes retrieved text green would 
 
 In fact creating a plugin actually attaches greenify to jQuery's ```prototype```, because ```$.fn``` is an alias for prototype.
 Recall that an object inherit methods and properties from their [prototype](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Inheritance_and_the_prototype_chain).
-Since, you're plugin is attached to the prototype, you can invoke the plugin after creating you're jQuery instance.
+Since, your plugin is attached to the prototype, you can invoke the plugin after creating your jQuery instance.
 
 The [related line](https://github.com/jquery/jquery/blob/master/src/core.js#L39) that creates this aliasing is as follows:
 
