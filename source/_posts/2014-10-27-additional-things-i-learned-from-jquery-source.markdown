@@ -20,13 +20,13 @@ I will be walking you through parts of the [jQuery codebase](https://github.com/
 I would also recommend taking a look at [Paul Irish's](http://www.paulirish.com/) related posts:
 [10 Things I learned From jQuery Source](http://www.paulirish.com/2010/10-things-i-learned-from-the-jquery-source/)
 and [11 More Things I learned From jQuery source](http://www.paulirish.com/2011/11-more-things-i-learned-from-the-jquery-source/).
-Here is also a [github gists](https://gist.github.com/chitsaou/4283482) that summarizes those videos.
+Here is also a [github gist](https://gist.github.com/chitsaou/4283482) that summarizes those videos.
 I try not to overlap with ideas he has already explained unless they are crucial to what I am discussing below.
 
 At the time of this writing, the version of jQuery I am exploring is **v2.1.1**.
 
 
-## How the development modules are structures
+## How the development modules are structured
 
 From a development perspective jQuery is broken down into a bunch
 of modules.
@@ -35,9 +35,9 @@ These modules are defined using the **Asynchronous Module Definition** [AMD](htt
 specification.
 
 The main file of jQuery is [src/jquery.js](https://github.com/jquery/jquery/blob/master/src/jquery.js)
-and its relevant dependies are listed as the array in the define function.
+and its relevant dependencies are listed as the array in the define function.
 
-{% codeblock AMD Defintion for jQuery lang:js %}
+{% codeblock AMD Definition for jQuery lang:js %}
 define([
     "./core", // refers to ./core.js
     "./selector", // refers to ./selector.js
@@ -51,6 +51,8 @@ return jQuery;
 {% endcodeblock %}
 This way of defining modules is crucial to how these modules are
 built.
+As we will discuss [requirejs](http://requirejs.org/) is used to resolve dependencies
+and load related modules/files.
 
 **Source:**[src/jquery.js](https://github.com/jquery/jquery/blob/master/src/jquery.js#L1-L37)
 
@@ -62,11 +64,14 @@ describes at a high level how the jQuery source is built.
 In particular you will need the [npm](https://www.npmjs.org/)
 and [grunt](http://gruntjs.com/getting-started). Grunt is a task runner
 which allows you to automate repetitive tasks from the command line.
-Grunt also provides a development API, which jQuery uss.
+Grunt also provides a development API, which jQuery uses.
+In the development directory there is a related [Gruntfile](https://github.com/jquery/jquery/blob/master/Gruntfile.js)
+that is read when ```grunt``` is ran on the command line.
+After you install npm and grunt you can build jQuery by running ```npm install && grunt```.
 I'm going to focus on the lower levels on how jQuery is built.
 
-jQuery uses [requirejs](http://requirejs.org/) to build out jQuery.
-The files that are responsible for building jQuery are stored in [build/tasks](https://github.com/jquery/jquery/tree/master/build/tasks).
+jQuery uses [requirejs](http://requirejs.org/) to build out jQuery by running [requirejs as a node module](http://requirejs.org/docs/node.html) 
+The files that are responsible for building jQuery are stored in the directory [build/tasks](https://github.com/jquery/jquery/tree/master/build/tasks).
 These are loaded by the Gruntfile:
 {% codeblock Load Build Tasks lang:js %}
 
@@ -76,9 +81,22 @@ grunt.loadTasks( "build/tasks" );
 {% endcodeblock %}
 **Source:** [build/tasks](https://github.com/jquery/jquery/blob/master/Gruntfile.js#L156)
 
+The build task is executed when ```grunt``` is run on the command line.
+This is because grunt runs the default task, which includes building among 
+another things like checking the JavaScript code quality, minifying the source for distribution,
+and comparing file size of the current git branch to that of master.
+
+{% codeblock default grunt task lang:js %}
+// Short list as a high frequency watch task
+grunt.registerTask( "dev", [ "build:*:*", "lint" ] );
+
+grunt.registerTask( "default", [ "jsonlint", "dev", "uglify", "dist:*", "compare_size" ] );
+{%endcodeblock %}
+**Source Code:** [register default grunt task](https://github.com/jquery/jquery/blob/master/Gruntfile.js#L160-L164)
+
 The relevant configuration for the tasks are also stored in the Gruntfile
 as a JavaScript object.
-{% codeblock Grunt Configuration lang:js %}
+{% codeblock Grunt Configuration for build lang:js %}
 build: {
     all: {
         dest: "dist/jquery.js",
@@ -121,7 +139,7 @@ is ```requirejs.optimize(config, function( response ) { ... ```
 that uses requirejs' optimize as function to build out the file.
 
 The configuration config that is passed to require.js optimize is also important to take a look at.
-A more detailed definition of these options is available [here](https://github.com/jrburke/r.js/blob/master/build/example.build.js)
+A more detailed definition of these options is available [here](https://github.com/jrburke/r.js/blob/master/build/example.build.js).
 
 {% codeblock configuration for requirejs.optimize build for jQuery lang:js%}
 
@@ -203,7 +221,7 @@ window.jQuery = window.$ = jQuery;
 **Source Code:** [src/exports/global.js](https://github.com/jquery/jquery/blob/master/src/exports/global.js)
 
 Variables at the global scope are automatically attached to the ```window``` object. Similarly if you want to create a global from
-a variable from in an inner scope, add it to the window object.
+a variable from an inner scope, add it to the window object.
 
 Since the jQuery codebase is encapsulated in an [IIFE](http://benalman.com/news/2010/11/immediately-invoked-function-expression/)
 to avoid polluting the global namespace, ```jQuery``` and ```$``` are attached to the window object to export
@@ -267,7 +285,7 @@ are creating a plugin, you are essentially adding another method to the jQuery O
 
 ## Method Chaining
 
-Many of jQuery's method's return ```this``` (referring to the jQuery object)
+Many of jQuery's methods return ```this``` (referring to the jQuery instance)
 
 For example **addClass**
 {% codeblock addClass returns this lang:js%}
@@ -306,7 +324,7 @@ jQuery = function( selector, context ) {
 **Source Code:** [src/core.js](https://github.com/jquery/jquery/blob/master/src/core.js#L19-L24)
 
 Since **jQuery.fn.init** is the internal constructor that is used to initialize the jQuery object,
-the prototype of init
+the prototype of init is set to the prototype of jQuery.
 {% codeblock Set fn.init.prototype to jQuery.fn lang:js%}
 
 // Give the init function the jQuery prototype for later instantiation
@@ -463,7 +481,7 @@ Here is a sample of properties from a jQuery object:
 {% endcodeblock %}
 
 jQuery's Array-like behavior meshes well with method chaining,
-because for method's that return ```this``` or the instance,
+because for methods that return ```this``` or the instance,
 you now have the option to not only call another instance method
 but also to access selected elements.
 
@@ -514,8 +532,7 @@ get: function( num ) {
 
 ### Constuctor Walkthroughs
 
-Now we'll discuss a few applications of the jQuery 
-constructor.
+Now we'll discuss a few applications/internals of the jQuery constructor.
 For a more detailed view of the meat of the constructor 
 refer to [src/core/init](https://github.com/jquery/jquery/blob/master/src/core/init.js#L16-L116).
 
@@ -530,13 +547,14 @@ if ( !selector ) {
 }
 
 {% endcodeblock %}
+**Source Code:** [src/core/init.js](https://github.com/jquery/jquery/blob/10399ddcf8a239acc27bdec9231b996b178224d3/src/core/init.js#L19-L22)
 
 Next the constructor  handles strings.
 At first the function checks if the string contains brackets
 and then uses a regex expression to check whether or not the 
 string matches html or contains an id.
 
-The regex expression is called ```rquickExpr```
+The regex expression is called ```rquickExpr```.
 
 {% codeblock rquickExpr lang:js %}
 
@@ -548,12 +566,12 @@ rquickExpr = /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]*))$/,
 {% endcodeblock %}
 **Source** [src/core/init](https://github.com/jquery/jquery/blob/master/src/core/init.js#L11-L13)
 
-The example I will first be discussion is a simple
+The example I will first be discussing is a simple
 selection for a class.
 
-#### Selector selector
+#### 1. Select selector
 {% codeblock  Find selector lang:js%}
-    $(".box")
+    $(".box") // find all elements with the box class
 {% endcodeblock %}
 Since this selector will not match the regex described above,
 the search will the constructor will invoke ```jQuery.fn.find```
@@ -568,7 +586,7 @@ to locate the search the document for the relevant elements
 {% endcodeblock %}
 
 
-This is the function defintion for ```jQuery.fn.find```.
+This is the function definition for ```jQuery.fn.find```.
 {% codeblock jQuery.fn.find lang:js %}
 jQuery.fn.extend({
     find: function( selector ) {
@@ -630,7 +648,22 @@ will just immediately return the instance of jQuery.
     },
 {% endcodeblock %}
 
-jQuery.merge  copies over the second array into 
+Another important aspect of push stack is that it keeps 
+reference to the previous object or parent of the search.
+This is helpful for methods like [end](http://api.jquery.com/end/)
+which return the reference to the parent element.
+{% codeblock Sample use of jQuery.end lang:js %}
+
+$( "ul.first" )
+    .find( ".foo" )
+        .css( "background-color", "red" ) // update .foo elements
+    .end() // return to ul.first
+// refer to http://api.jquery.com/end/
+
+{% endcodeblock %}
+**Source:** [jQuery.end](https://github.com/jquery/jquery/blob/10399ddcf8a239acc27bdec9231b996b178224d3/src/core.js#L113-L115)
+
+jQuery.merge  (used in pushStack) copies over the second array into 
 the first array. In this case, the elements returned from jQuery's 
 sizzle are copied over to the instance (```this```).
 
@@ -653,6 +686,136 @@ merge: function( first, second ) {
 }
 {% endcodeblock %}
 **Source:** [src/core.js](https://github.com/jquery/jquery/blob/master/src/core.js#L357-L369)
+
+#### 2. Build HTML
+
+If  the content matches the HTML regex describe previously, an array of DOM nodes generated from the parsed html
+is merged into the current instance.
+
+{% codeblock Sample for constructing elements with jQuery using html lang:js %}
+    $("<div></div>") // build a div element
+{% endcodeblock %}
+
+{% codeblock parse html in constructor lang:js %}
+jQuery.merge( this, jQuery.parseHTML(
+                    match[1],
+                    context && context.nodeType ? context.ownerDocument || context : document,
+                    true
+));
+{% endcodeblock %}
+
+
+#### 3. document.ready
+
+ ```$(document).ready( handler )``` is a construct
+that is used to invoke the handler when the DOM 
+has been constructed.
+
+Since document is a DOM element it will simply be stored as element 0 of the instance.
+{% codeblock handle DOMElement lang:js %}
+if ( selector.nodeType ) {
+    this.context = this[0] = selector;
+    this.length = 1;
+    return this;
+}
+{% endcodeblock %}
+**Source: ** [src/core/init.js](https://github.com/jquery/jquery/blob/master/src/core/init.js#L96-L98)
+
+Then [jQuery.fn.ready](https://github.com/jquery/jquery/blob/10399ddcf8a239acc27bdec9231b996b178224d3/src/core/ready.js)
+ is invoked with the callback. An interesting to note is that that invoking ```.ready``` does not require any elements
+although the [api  does not recommend using ready like this](http://api.jquery.com/ready/): ```$().ready( handler )``` (this is not recommened).
+
+There is another shorthand for ```$(document).ready``` where you pass
+the function to the constructor.
+{% codeblock Shorthand document.ready lang:js %}
+    $( handler )
+{% endcodeblock %}
+
+Internally jQuery stores a reference to the document called ```rootjQuery```.
+If a function is passed to the constructor, then ready is called on rootjQuery.
+
+{% codeblock rootjQuery lang:js %}
+
+// A central reference to the root jQuery(document)
+var rootjQuery,
+
+// ...
+
+// ...
+
+// Initialize central reference
+rootjQuery = jQuery( document );
+
+{% endcodeblock %}
+**Source code:** [src/core/init.js](https://github.com/jquery/jquery/blob/master/src/core/init.js#L122)
+
+{% codeblock Handle: $(function) lang:js %}
+
+// ...
+} else if ( jQuery.isFunction( selector ) ) {
+    return rootjQuery.ready !== undefined ?
+        rootjQuery.ready( selector ) :
+        // Execute immediately if ready is not present
+        selector( jQuery );
+
+}
+
+// ...
+
+{% endcodeblock %}
+**Source code:** [src/core/init.js](https://github.com/jquery/jquery/blob/master/src/core/init.js#L103-L107)
+
+#### 4. $({})
+
+Finally if the item passed into the constuctor does not match any of these cases (and others not discussed here)
+the constructor simply makes an array out of the element passed in.
+
+{% codeblock Example that reaches default case lang:js%}
+
+    $({});
+    // returns [{}]
+{% endcodeblock %}
+{% codeblock default constructor case lang:js %}
+
+return jQuery.makeArray( selector, this );
+
+{% endcodeblock %}
+**Source code:** [src/core/init](https://github.com/jquery/jquery/blob/master/src/core/init.js#L115).
+More on [makeArray](https://github.com/jquery/jquery/blob/master/src/core.js#L336-L350).
+
+Why would use a construct like ```$({})```? Wrapping an object around jQuery allows you
+to apply jQuery's methods onto the object.
+
+[Ben Alman](http://benalman.com/) wrote a [tiny pub-sub system](https://gist.github.com/cowboy/661855)
+using such a construct.
+
+{% codeblock Tiny Pub-Sub by Ben Alman %}
+
+/* jQuery Tiny Pub/Sub - v0.7 - 10/27/2011
+ * http://benalman.com/
+ * Copyright (c) 2011 "Cowboy" Ben Alman; Licensed MIT, GPL */
+
+(function($) {
+
+  var o = $({});
+
+  $.subscribe = function() {
+    o.on.apply(o, arguments);
+  };
+
+  $.unsubscribe = function() {
+    o.off.apply(o, arguments);
+  };
+
+  $.publish = function() {
+    o.trigger.apply(o, arguments);
+  };
+
+}(jQuery));
+
+{% endcodeblock %}
+
+**Source Code** [jquery-tiny-pubsub](https://github.com/cowboy/jquery-tiny-pubsub/blob/master/src/tiny-pubsub.js)
 
 
 
@@ -736,12 +899,13 @@ If you are [passing a function to addClass](http://api.jquery.com/addclass/#addC
 jQuery uses the ```this.fn.each``` to iterate over the object.
 This is because ```this.fn.each``` uses ```jQuery.each```
 which invokes the function on each element.
-So in the inner line of the callback, ```this``` actually refers to the individual element.
+So in the inner line of the callback ```this``` actually refers to the individual element.
 
 {% codeblock this.each iteration addClass lang:js %}
 
 if ( jQuery.isFunction( value ) ) {
     return this.each(function( j ) {
+        // 'this' here refers to the individual element.
         jQuery( this ).addClass( value.call( this, j, this.className ) ); // invoke function and individual method
     });
 }
@@ -751,4 +915,8 @@ if ( jQuery.isFunction( value ) ) {
 **Source Code:** [src/attributes/classes.js](https://github.com/jquery/jquery/blob/master/src/attributes/classes.js#L17-L21)
 
 [More details on jQuery.each](https://github.com/jquery/jquery/blob/master/src/core.js#L279-L326)
+
+I hope this article gives you a good overview of how jQuery is built and certain aspects of the codebase.
+Applying these principles I hope you will be at more ease should you choose to further explore jQuery's codebase
+or write more JavaScript.
 
