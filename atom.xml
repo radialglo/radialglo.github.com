@@ -4,7 +4,7 @@
   <title><![CDATA[Anthony Su]]></title>
   <link href="http://radialglo.github.com/atom.xml" rel="self"/>
   <link href="http://radialglo.github.com/"/>
-  <updated>2014-11-02T23:13:20-08:00</updated>
+  <updated>2014-11-03T00:05:58-08:00</updated>
   <id>http://radialglo.github.com/</id>
   <author>
     <name><![CDATA[Anthony Su]]></name>
@@ -342,7 +342,7 @@ jQuery&#8217;s documentation on <a href="http://learn.jquery.com/using-jquery-co
 
 <h2>Prototype Alias</h2>
 
-<p>If you&#8217;ve ever tried creating you&#8217;re own <a href="http://learn.jquery.com/plugins/basic-plugin-creation/">jQuery plugin</a>
+<p>If you&#8217;ve ever tried creating your own <a href="http://learn.jquery.com/plugins/basic-plugin-creation/">jQuery plugin</a>
 you&#8217;ll notice that you add the plugin to <code>$.fn</code>.</p>
 
 <p>As an example for <a href="http://learn.jquery.com/plugins/basic-plugin-creation/">jQuery&#8217;s plugin tutorial</a>,
@@ -362,7 +362,7 @@ creating a plugin called <code>greenify</code> that makes retrieved text green w
 
 <p>In fact creating a plugin actually attaches greenify to jQuery&#8217;s <code>prototype</code>, because <code>$.fn</code> is an alias for prototype.
 Recall that an object inherit methods and properties from their <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Inheritance_and_the_prototype_chain">prototype</a>.
-Since, you&#8217;re plugin is attached to the prototype, you can invoke the plugin after creating you&#8217;re jQuery instance.</p>
+Since, your plugin is attached to the prototype, you can invoke the plugin after creating your jQuery instance.</p>
 
 <p>The <a href="https://github.com/jquery/jquery/blob/master/src/core.js#L39">related line</a> that creates this aliasing is as follows:</p>
 
