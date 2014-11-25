@@ -1,0 +1,511 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Understanding Pseudoclassical Inheritance in JavaScript - Anthony Su</title>
+  <meta name="author" content="Anthony Su">
+
+  
+  <meta name="description" content="Introduction In JavaScript: The Good Parts, Douglas Crockford disapproves of Pseudoclassical Inheritance
+in favor of Functional Inheritance. However &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://radialglo.github.com/blog/2014/11/24/understanding-pseudoclassical-inheritance-in-javascript">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Anthony Su" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-50887935-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Anthony Su</a></h1>
+  
+    <h2>coding adventures</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:radialglo.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Understanding Pseudoclassical Inheritance in JavaScript</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-11-24T22:49:00-08:00" pubdate data-updated="true">Nov 24<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>Introduction</h2>
+
+<p>In <a href="http://shop.oreilly.com/product/9780596517748.do">JavaScript: The Good Parts</a>, <a href="http://www.crockford.com/">Douglas Crockford</a> disapproves of <strong>Pseudoclassical Inheritance</strong>
+in favor of <strong>Functional Inheritance</strong>. However, a quick survey of JavaScript resources such as <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Introduction_to_Object-Oriented_JavaScript">Mozilla Developer Network(MDN)</a> and JavaScript Tools/Libraries such as  <a href="https://github.com/google/closure-library">Google Closure</a>, <a href="http://coffeescript.org/">CoffeeScript</a>, <a href="http://www.yuiblog.com/blog/2010/01/06/inheritance-patterns-in-yui-3/">YUI3</a>, and <a href="https://github.com/jasmine/jasmine">Jasmine</a> indicate that Pseudoclassical pattern seems to be quite a popular inheritance pattern.</p>
+
+<h2>Drawbacks of Functional Inheritance</h2>
+
+<p><a href="http://bolinfest.com/">Michael Bolin</a> who was a core contributor to Google Closure presents
+a strong case for Pseudoclassical Inheritance in his blog post <a href="http://bolinfest.com/javascript/inheritance.php">Inheritance Patterns in JavaScript</a>.
+In his post he presents drawbacks for using Functional Inheritance and also addresses Douglas Crockford&#8217;s concerns for Pseudoclassical Inheritance.</p>
+
+<h3>Main Drawbacks</h3>
+
+<ol>
+<li>Instance of types take up more memory</li>
+<li>Types cannot be tested using instanceof</li>
+<li>Encourages adding properties to Function.prototype and Object.prototype</li>
+<li>Makes it impossible to update all instances of a type</li>
+<li>Naming newly created objects is awkward</li>
+</ol>
+
+
+<h3>Closure-related/Other Drawbacks</h3>
+
+<ol>
+<li>Methods cannot be inlined</li>
+<li>Superclass methods cannot be renamed(or will be renamed incorrectly)</li>
+<li>Results in an extra level of indentation</li>
+</ol>
+
+
+<h2>Naive Implementation of Pseudoclassical Inheritance</h2>
+
+<h2>General Implementation of Pseudoclassical Inheritance</h2>
+
+<h2>Pseudoclassical Inheritance in the wild</h2>
+
+<h3>Google Closure</h3>
+
+<p>Closure is a set of individual JavaScript tools that are also designed to help developers build complex web applications, and is used by Gmail, Google Maps, and Google Docs.</p>
+
+<!--
+https://developers.google.com/closure/faq#gwt
+-->
+
+
+<h3>CoffeeScript</h3>
+
+<blockquote><p>JavaScript&#8217;s prototypal inheritance has always been a bit of a brain-bender, with a whole family tree of libraries that provide a cleaner syntax for classical inheritance on top of JavaScript&#8217;s prototypes: <a href="https://code.google.com/p/base2/">Base2</a>, <a href="http://prototypejs.org/">Prototype.js</a>, <a href="http://prototypejs.org/">JS.Class</a>, etc. The libraries provide syntactic sugar, but the built-in inheritance would be completely usable if it weren&#8217;t for a couple of small exceptions: it&#8217;s awkward to call super (the prototype object&#8217;s implementation of the current function), and it&#8217;s awkward to correctly set the prototype chain.</p></blockquote>
+
+<!--
+http://coffeescript.org/#classes
+-->
+
+
+
+
+<figure class='code'><figcaption><span>Inheritance implemented in compiled-down CoffeeScript  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">Animal</span><span class="p">,</span> <span class="nx">Horse</span><span class="p">,</span> <span class="nx">Snake</span><span class="p">,</span> <span class="nx">sam</span><span class="p">,</span> <span class="nx">tom</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">__hasProp</span> <span class="o">=</span> <span class="p">{}.</span><span class="nx">hasOwnProperty</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">__extends</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">child</span><span class="p">,</span> <span class="nx">parent</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">key</span> <span class="k">in</span> <span class="nx">parent</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="nx">__hasProp</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">parent</span><span class="p">,</span> <span class="nx">key</span><span class="p">))</span> <span class="nx">child</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">parent</span><span class="p">[</span><span class="nx">key</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="kd">function</span> <span class="nx">ctor</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">this</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">=</span> <span class="nx">child</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="nx">ctor</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">parent</span><span class="p">.</span><span class="nx">prototype</span><span class="p">;</span>
+</span><span class='line'>        <span class="nx">child</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ctor</span><span class="p">();</span>
+</span><span class='line'>        <span class="nx">child</span><span class="p">.</span><span class="nx">__super__</span> <span class="o">=</span> <span class="nx">parent</span><span class="p">.</span><span class="nx">prototype</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">child</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">Animal</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">function</span> <span class="nx">Animal</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">Animal</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">move</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">meters</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">alert</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot; moved &quot;</span> <span class="o">+</span> <span class="nx">meters</span> <span class="o">+</span> <span class="s2">&quot;m.&quot;</span><span class="p">));</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">Animal</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">})();</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">Snake</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">_super</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">__extends</span><span class="p">(</span><span class="nx">Snake</span><span class="p">,</span> <span class="nx">_super</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">function</span> <span class="nx">Snake</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">Snake</span><span class="p">.</span><span class="nx">__super__</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">Snake</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">move</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;Slithering...&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">Snake</span><span class="p">.</span><span class="nx">__super__</span><span class="p">.</span><span class="nx">move</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">Snake</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">})(</span><span class="nx">Animal</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Jasmine</h3>
+
+<!--
+https://github.com/jasmine/jasmine/blob/master/src/core/util.js
+https://github.com/jasmine/jasmine/blob/master/src/core/util.js#L3-L10
+-->
+
+
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>  <span class="nx">util</span><span class="p">.</span><span class="nx">inherit</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">childClass</span><span class="p">,</span> <span class="nx">parentClass</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">Subclass</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'>    <span class="nx">Subclass</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">parentClass</span><span class="p">.</span><span class="nx">prototype</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">childClass</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Subclass</span><span class="p">();</span>
+</span><span class='line'>  <span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>YUI3</h3>
+
+<!--
+http://www.yuiblog.com/blog/2010/01/06/inheritance-patterns-in-yui-3/
+https://github.com/yui/yui3/blob/master/src/oop/js/oop.js#L181-L220
+-->
+
+
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Utility to set up the prototype, constructor and superclass properties to</span>
+</span><span class='line'><span class="cm"> * support an inheritance strategy that can chain constructors and methods.</span>
+</span><span class='line'><span class="cm"> * Static members will not be inherited.</span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> * @method extend</span>
+</span><span class='line'><span class="cm"> * @param {function} r   the object to modify.</span>
+</span><span class='line'><span class="cm"> * @param {function} s the object to inherit.</span>
+</span><span class='line'><span class="cm"> * @param {object} px prototype properties to add/override.</span>
+</span><span class='line'><span class="cm"> * @param {object} sx static properties to add/override.</span>
+</span><span class='line'><span class="cm"> * @return {object} the extended object.</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="nx">Y</span><span class="p">.</span><span class="nx">extend</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">r</span><span class="p">,</span> <span class="nx">s</span><span class="p">,</span> <span class="nx">px</span><span class="p">,</span> <span class="nx">sx</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">s</span> <span class="o">||</span> <span class="o">!</span><span class="nx">r</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">Y</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;extend failed, verify dependencies&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">sp</span> <span class="o">=</span> <span class="nx">s</span><span class="p">.</span><span class="nx">prototype</span><span class="p">,</span> <span class="nx">rp</span> <span class="o">=</span> <span class="nx">Y</span><span class="p">.</span><span class="nb">Object</span><span class="p">(</span><span class="nx">sp</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">r</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">rp</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">rp</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">=</span> <span class="nx">r</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">r</span><span class="p">.</span><span class="nx">superclass</span> <span class="o">=</span> <span class="nx">sp</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// assign constructor property</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">s</span> <span class="o">!=</span> <span class="nb">Object</span> <span class="o">&amp;&amp;</span> <span class="nx">sp</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">==</span> <span class="nx">OP</span><span class="p">.</span><span class="nx">constructor</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">sp</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">=</span> <span class="nx">s</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// add prototype overrides</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">px</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">Y</span><span class="p">.</span><span class="nx">mix</span><span class="p">(</span><span class="nx">rp</span><span class="p">,</span> <span class="nx">px</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// add object overrides</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">sx</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">Y</span><span class="p">.</span><span class="nx">mix</span><span class="p">(</span><span class="nx">r</span><span class="p">,</span> <span class="nx">sx</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">r</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Anthony Su</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-11-24T22:49:00-08:00" pubdate data-updated="true">Nov 24<span>th</span>, 2014</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://radialglo.github.com/blog/2014/11/24/understanding-pseudoclassical-inheritance-in-javascript/" data-via="" data-counturl="http://radialglo.github.com/blog/2014/11/24/understanding-pseudoclassical-inheritance-in-javascript/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/10/27/additional-things-i-learned-from-jquery-source/" title="Previous Post: Additional Things I learned from jQuery Source">&laquo; Additional Things I learned from jQuery Source</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/11/24/understanding-pseudoclassical-inheritance-in-javascript/">Understanding Pseudoclassical Inheritance in JavaScript</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/10/27/additional-things-i-learned-from-jquery-source/">Additional Things I learned from jQuery Source</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/08/07/understanding-the-intuition-of-easing/">Understanding the Intuition of Easing</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/05/24/what-i-learned-from-launching-version-2-of-my-portfolio/">What I learned from launching version 2 of my portfolio</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/29/attribute-nodes-of-html-elements/">Attribute Nodes of HTML Elements</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Anthony Su -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'radialglo';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://radialglo.github.com/blog/2014/11/24/understanding-pseudoclassical-inheritance-in-javascript/';
+        var disqus_url = 'http://radialglo.github.com/blog/2014/11/24/understanding-pseudoclassical-inheritance-in-javascript/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

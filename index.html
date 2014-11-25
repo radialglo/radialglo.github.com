@@ -9,8 +9,8 @@
   <meta name="author" content="Anthony Su">
 
   
-  <meta name="description" content="Introduction Several months ago I decided to build a client side library called Guac.
-The library supports a similar and trimmed down API of that of &hellip;">
+  <meta name="description" content="Introduction In JavaScript: The Good Parts, Douglas Crockford disapproves of Pseudoclassical Inheritance
+in favor of Functional Inheritance. However &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -78,6 +78,307 @@ The library supports a similar and trimmed down API of that of &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/11/24/understanding-pseudoclassical-inheritance-in-javascript/">Understanding Pseudoclassical Inheritance in JavaScript</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-11-24T22:49:00-08:00" pubdate data-updated="true">Nov 24<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>Introduction</h2>
+
+<p>In <a href="http://shop.oreilly.com/product/9780596517748.do">JavaScript: The Good Parts</a>, <a href="http://www.crockford.com/">Douglas Crockford</a> disapproves of <strong>Pseudoclassical Inheritance</strong>
+in favor of <strong>Functional Inheritance</strong>. However, a quick survey of JavaScript resources such as <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Introduction_to_Object-Oriented_JavaScript">Mozilla Developer Network(MDN)</a> and JavaScript Tools/Libraries such as  <a href="https://github.com/google/closure-library">Google Closure</a>, <a href="http://coffeescript.org/">CoffeeScript</a>, <a href="http://www.yuiblog.com/blog/2010/01/06/inheritance-patterns-in-yui-3/">YUI3</a>, and <a href="https://github.com/jasmine/jasmine">Jasmine</a> indicate that Pseudoclassical pattern seems to be quite a popular inheritance pattern.</p>
+
+<h2>Drawbacks of Functional Inheritance</h2>
+
+<p><a href="http://bolinfest.com/">Michael Bolin</a> who was a core contributor to Google Closure presents
+a strong case for Pseudoclassical Inheritance in his blog post <a href="http://bolinfest.com/javascript/inheritance.php">Inheritance Patterns in JavaScript</a>.
+In his post he presents drawbacks for using Functional Inheritance and also addresses Douglas Crockford&#8217;s concerns for Pseudoclassical Inheritance.</p>
+
+<h3>Main Drawbacks</h3>
+
+<ol>
+<li>Instance of types take up more memory</li>
+<li>Types cannot be tested using instanceof</li>
+<li>Encourages adding properties to Function.prototype and Object.prototype</li>
+<li>Makes it impossible to update all instances of a type</li>
+<li>Naming newly created objects is awkward</li>
+</ol>
+
+
+<h3>Closure-related/Other Drawbacks</h3>
+
+<ol>
+<li>Methods cannot be inlined</li>
+<li>Superclass methods cannot be renamed(or will be renamed incorrectly)</li>
+<li>Results in an extra level of indentation</li>
+</ol>
+
+
+<h2>Naive Implementation of Pseudoclassical Inheritance</h2>
+
+<h2>General Implementation of Pseudoclassical Inheritance</h2>
+
+<h2>Pseudoclassical Inheritance in the wild</h2>
+
+<h3>Google Closure</h3>
+
+<p>Closure is a set of individual JavaScript tools that are also designed to help developers build complex web applications, and is used by Gmail, Google Maps, and Google Docs.</p>
+
+<!--
+https://developers.google.com/closure/faq#gwt
+-->
+
+
+<h3>CoffeeScript</h3>
+
+<blockquote><p>JavaScript&#8217;s prototypal inheritance has always been a bit of a brain-bender, with a whole family tree of libraries that provide a cleaner syntax for classical inheritance on top of JavaScript&#8217;s prototypes: <a href="https://code.google.com/p/base2/">Base2</a>, <a href="http://prototypejs.org/">Prototype.js</a>, <a href="http://prototypejs.org/">JS.Class</a>, etc. The libraries provide syntactic sugar, but the built-in inheritance would be completely usable if it weren&#8217;t for a couple of small exceptions: it&#8217;s awkward to call super (the prototype object&#8217;s implementation of the current function), and it&#8217;s awkward to correctly set the prototype chain.</p></blockquote>
+
+<!--
+http://coffeescript.org/#classes
+-->
+
+
+
+
+<figure class='code'><figcaption><span>Inheritance implemented in compiled-down CoffeeScript  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">Animal</span><span class="p">,</span> <span class="nx">Horse</span><span class="p">,</span> <span class="nx">Snake</span><span class="p">,</span> <span class="nx">sam</span><span class="p">,</span> <span class="nx">tom</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">__hasProp</span> <span class="o">=</span> <span class="p">{}.</span><span class="nx">hasOwnProperty</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">__extends</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">child</span><span class="p">,</span> <span class="nx">parent</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">key</span> <span class="k">in</span> <span class="nx">parent</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="nx">__hasProp</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">parent</span><span class="p">,</span> <span class="nx">key</span><span class="p">))</span> <span class="nx">child</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">parent</span><span class="p">[</span><span class="nx">key</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="kd">function</span> <span class="nx">ctor</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">this</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">=</span> <span class="nx">child</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="nx">ctor</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">parent</span><span class="p">.</span><span class="nx">prototype</span><span class="p">;</span>
+</span><span class='line'>        <span class="nx">child</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ctor</span><span class="p">();</span>
+</span><span class='line'>        <span class="nx">child</span><span class="p">.</span><span class="nx">__super__</span> <span class="o">=</span> <span class="nx">parent</span><span class="p">.</span><span class="nx">prototype</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">child</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">Animal</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">function</span> <span class="nx">Animal</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">Animal</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">move</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">meters</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">alert</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot; moved &quot;</span> <span class="o">+</span> <span class="nx">meters</span> <span class="o">+</span> <span class="s2">&quot;m.&quot;</span><span class="p">));</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">Animal</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">})();</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">Snake</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">_super</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">__extends</span><span class="p">(</span><span class="nx">Snake</span><span class="p">,</span> <span class="nx">_super</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">function</span> <span class="nx">Snake</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">Snake</span><span class="p">.</span><span class="nx">__super__</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">Snake</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">move</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;Slithering...&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">Snake</span><span class="p">.</span><span class="nx">__super__</span><span class="p">.</span><span class="nx">move</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">Snake</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">})(</span><span class="nx">Animal</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Jasmine</h3>
+
+<!--
+https://github.com/jasmine/jasmine/blob/master/src/core/util.js
+https://github.com/jasmine/jasmine/blob/master/src/core/util.js#L3-L10
+-->
+
+
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>  <span class="nx">util</span><span class="p">.</span><span class="nx">inherit</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">childClass</span><span class="p">,</span> <span class="nx">parentClass</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">Subclass</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'>    <span class="nx">Subclass</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">parentClass</span><span class="p">.</span><span class="nx">prototype</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">childClass</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Subclass</span><span class="p">();</span>
+</span><span class='line'>  <span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>YUI3</h3>
+
+<!--
+http://www.yuiblog.com/blog/2010/01/06/inheritance-patterns-in-yui-3/
+https://github.com/yui/yui3/blob/master/src/oop/js/oop.js#L181-L220
+-->
+
+
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Utility to set up the prototype, constructor and superclass properties to</span>
+</span><span class='line'><span class="cm"> * support an inheritance strategy that can chain constructors and methods.</span>
+</span><span class='line'><span class="cm"> * Static members will not be inherited.</span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> * @method extend</span>
+</span><span class='line'><span class="cm"> * @param {function} r   the object to modify.</span>
+</span><span class='line'><span class="cm"> * @param {function} s the object to inherit.</span>
+</span><span class='line'><span class="cm"> * @param {object} px prototype properties to add/override.</span>
+</span><span class='line'><span class="cm"> * @param {object} sx static properties to add/override.</span>
+</span><span class='line'><span class="cm"> * @return {object} the extended object.</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="nx">Y</span><span class="p">.</span><span class="nx">extend</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">r</span><span class="p">,</span> <span class="nx">s</span><span class="p">,</span> <span class="nx">px</span><span class="p">,</span> <span class="nx">sx</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">s</span> <span class="o">||</span> <span class="o">!</span><span class="nx">r</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">Y</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;extend failed, verify dependencies&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">sp</span> <span class="o">=</span> <span class="nx">s</span><span class="p">.</span><span class="nx">prototype</span><span class="p">,</span> <span class="nx">rp</span> <span class="o">=</span> <span class="nx">Y</span><span class="p">.</span><span class="nb">Object</span><span class="p">(</span><span class="nx">sp</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">r</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">rp</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">rp</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">=</span> <span class="nx">r</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">r</span><span class="p">.</span><span class="nx">superclass</span> <span class="o">=</span> <span class="nx">sp</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// assign constructor property</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">s</span> <span class="o">!=</span> <span class="nb">Object</span> <span class="o">&amp;&amp;</span> <span class="nx">sp</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">==</span> <span class="nx">OP</span><span class="p">.</span><span class="nx">constructor</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">sp</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">=</span> <span class="nx">s</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// add prototype overrides</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">px</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">Y</span><span class="p">.</span><span class="nx">mix</span><span class="p">(</span><span class="nx">rp</span><span class="p">,</span> <span class="nx">px</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// add object overrides</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">sx</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">Y</span><span class="p">.</span><span class="nx">mix</span><span class="p">(</span><span class="nx">r</span><span class="p">,</span> <span class="nx">sx</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">r</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -4760,6 +5061,10 @@ It turned out that my bundler was installed to a specific gemset and once I inst
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/11/24/understanding-pseudoclassical-inheritance-in-javascript/">Understanding Pseudoclassical Inheritance in JavaScript</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/10/27/additional-things-i-learned-from-jquery-source/">Additional Things I learned from jQuery Source</a>
       </li>
     
@@ -4773,10 +5078,6 @@ It turned out that my bundler was installed to a specific gemset and once I inst
     
       <li class="post">
         <a href="/blog/2013/12/29/attribute-nodes-of-html-elements/">Attribute Nodes of HTML Elements</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/12/18/dom-versus-dom-tree/">DOM versus DOM Tree</a>
       </li>
     
   </ul>
