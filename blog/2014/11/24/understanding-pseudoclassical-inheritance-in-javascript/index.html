@@ -113,25 +113,291 @@ in favor of <strong>Functional Inheritance</strong>. However, a quick survey of 
 
 <p><a href="http://bolinfest.com/">Michael Bolin</a> who was a core contributor to Google Closure presents
 a strong case for Pseudoclassical Inheritance in his blog post <a href="http://bolinfest.com/javascript/inheritance.php">Inheritance Patterns in JavaScript</a>.
-In his post he presents drawbacks for using Functional Inheritance and also addresses Douglas Crockford&#8217;s concerns for Pseudoclassical Inheritance.</p>
+In his post he discusses drawbacks for using Functional Inheritance and also addresses Douglas Crockford&#8217;s concerns for Pseudoclassical Inheritance.</p>
+
+<p>Here is an example of Functional Inheritance from Douglas Crockford&#8217;s book:</p>
+
+<figure class='code'><figcaption><span>Functional Inheritance Example</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">mammal</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">spec</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">that</span> <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">that</span><span class="p">.</span><span class="nx">get_name</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">spec</span><span class="p">.</span><span class="nx">name</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">that</span><span class="p">.</span><span class="nx">says</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">spec</span><span class="p">.</span><span class="nx">saying</span> <span class="o">||</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">that</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">cat</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">spec</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">spec</span><span class="p">.</span><span class="nx">saying</span> <span class="o">=</span> <span class="nx">spec</span><span class="p">.</span><span class="nx">saying</span> <span class="o">||</span> <span class="s1">&#39;meow&#39;</span><span class="p">;</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">that</span> <span class="o">=</span> <span class="nx">mammal</span><span class="p">(</span><span class="nx">spec</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">that</span><span class="p">.</span><span class="nx">purr</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">n</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">s</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">n</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="nx">s</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                <span class="nx">s</span> <span class="o">+=</span> <span class="s1">&#39;-&#39;</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>            <span class="nx">s</span> <span class="o">+=</span> <span class="s1">&#39;r&#39;</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">s</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'>    <span class="nx">that</span><span class="p">.</span><span class="nx">get_name</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">that</span><span class="p">.</span><span class="nx">says</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nx">spec</span><span class="p">.</span><span class="nx">name</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nx">that</span><span class="p">.</span><span class="nx">says</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">that</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">myMammal</span> <span class="o">=</span> <span class="nx">mammal</span><span class="p">({</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Herb&#39;</span><span class="p">});</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">myCat</span> <span class="o">=</span> <span class="nx">cat</span><span class="p">({</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Fiona&#39;</span><span class="p">});</span>
+</span><span class='line'>    <span class="nx">myCat</span><span class="p">.</span><span class="nx">get_name</span><span class="p">();</span> <span class="c1">// &quot;meow Fiona meow&quot;</span>
+</span><span class='line'>    <span class="nx">myCat</span><span class="p">.</span><span class="nx">purr</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span> <span class="c1">// &quot;r-r-r-r-r&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>and the same &#8220;classes&#8221; modeled using Pseudoclassical Inheritance:</p>
+
+<figure class='code'><figcaption><span>Pseudoclassical Inheritance Example</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">Mammal</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">Mammal</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">get_name</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">Mammal</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">says</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">saying</span> <span class="o">||</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">Cat</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">Mammal</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">name</span><span class="p">);</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">Cat</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">Mammal</span><span class="p">.</span><span class="nx">prototype</span><span class="p">);</span>
+</span><span class='line'><span class="nx">Cat</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">=</span> <span class="nx">Cat</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">Cat</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">saying</span> <span class="o">=</span> <span class="s1">&#39;meow&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">Cat</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">purr</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">n</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">s</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">n</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="nx">s</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">s</span> <span class="o">+=</span> <span class="s1">&#39;-&#39;</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="nx">s</span> <span class="o">+=</span> <span class="s1">&#39;r&#39;</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">s</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="nx">Cat</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">get_name</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">says</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">says</span><span class="p">();</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">myMammal</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Mammal</span><span class="p">(</span><span class="s1">&#39;Herb&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">myCat</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Cat</span><span class="p">(</span><span class="s1">&#39;Fiona&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">myCat</span><span class="p">.</span><span class="nx">get_name</span><span class="p">();</span> <span class="c1">// &quot;meow Fiona meow&quot;</span>
+</span><span class='line'>    <span class="nx">myCat</span><span class="p">.</span><span class="nx">purr</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span> <span class="c1">// &quot;r-r-r-r-r&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <h3>Main Drawbacks</h3>
 
+<p>I would recommend reading Michael Bolins <a href="http://bolinfest.com/javascript/inheritance.php">Inheritance Patterns in JavaScript</a>
+for an in depth explanation of these drawbacks. Note that some of his points are made in respect to Google Closure.</p>
+
 <ol>
-<li>Instance of types take up more memory</li>
-<li>Types cannot be tested using instanceof</li>
-<li>Encourages adding properties to Function.prototype and Object.prototype</li>
-<li>Makes it impossible to update all instances of a type</li>
-<li>Naming newly created objects is awkward</li>
+<li><p>Instance of types take up more memory</p>
+
+<ul>
+<li>Every time <code>mammal()</code> is called, two new functions are created (one per method of the type). Each time, the functions are basically the same, but they are bound to different values. These functions are expensive because each is a closure that maintains a reference for every named variable in the enclosing function in which the closure was defined. This may accidentally prevent objects from being garbage collected, causing a memory leak.</li>
+<li>This is not a concern when <code>Mammal</code> is called because of how it takes advantage of prototype-based inheritance. Each method is defined once on <code>Mammal.prototype</code> and is therefore available to every instance of <code>Mammal</code>. This limits the number of function objects that are created and does not run the risk of leaking memory</li>
+</ul>
+</li>
+<li><p>Types cannot be tested using instanceof</p>
+
+<ul>
+<li>From <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/instanceof">MDN</a>, the <code>instanceof</code> operator tests
+whether an object has in its prototype chain the <code>prototype</code> property of a constructor.
+
+<blockquote><p><code>object instanceof constructor</code></p></blockquote></li>
+<li>Since prototypes are not used for implementing inheritance for <code>cat()</code>, there is no appropriate constructor to use for instanceof</li>
+</ul>
+</li>
+<li>Encourages adding properties to Function.prototype and Object.prototype
+
+<ul>
+<li>In his book, Crockford augment&#8217;s the prototype to assist in creating superclass methods</li>
+</ul>
+</li>
 </ol>
+
+
+<figure class='code'><figcaption><span>Prototype Augmentation from JavaScript: The Good Parts</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// From Chapter 4.</span>
+</span><span class='line'><span class="nb">Function</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">method</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">func</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">prototype</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">func</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// From Chapter 5.</span>
+</span><span class='line'><span class="nb">Object</span><span class="p">.</span><span class="nx">method</span><span class="p">(</span><span class="s1">&#39;superior&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">that</span> <span class="o">=</span> <span class="k">this</span><span class="p">,</span> <span class="nx">method</span> <span class="o">=</span> <span class="nx">that</span><span class="p">[</span><span class="nx">name</span><span class="p">];</span>
+</span><span class='line'>  <span class="k">return</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">method</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">that</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>Adding methods to the prototype is dangerous, especially because the <code>for in</code> construct includes properties added to the prototype.</p></li>
+<li><p>Makes it impossible to update all instances of a type</p>
+
+<ul>
+<li>You need to individually update each instance.</li>
+<li>In Pseudoclassical Inheritance, updating all instance of a type is as simple as updating properties or methods on the prototype.</li>
+</ul>
+</li>
+</ul>
 
 
 <h3>Closure-related/Other Drawbacks</h3>
 
 <ol>
-<li>Methods cannot be inlined</li>
-<li>Superclass methods cannot be renamed(or will be renamed incorrectly)</li>
-<li>Results in an extra level of indentation</li>
+<li>Methods cannot be inlined
+
+<ul>
+<li>Methods in the functional pattern are often bound to variables that cannot be referenced externally, so there is no way for Closure Compiler to rewrite method calls in a manner that eliminates the method dispatch</li>
+</ul>
+</li>
+<li>Superclass methods cannot be renamed(or will be renamed incorrectly)
+
+<ul>
+<li>Method renaming from JavaScript minifiers can use issues</li>
+</ul>
+</li>
+<li>Results in an extra level of indentation
+
+<ul>
+<li>Coding preference</li>
+</ul>
+</li>
+<li>Naming newly created objects is awkward</li>
 </ol>
 
 
