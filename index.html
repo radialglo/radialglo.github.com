@@ -406,22 +406,320 @@ whether an object has in its prototype chain the <code>prototype</code> property
 
 <h2>Naive Implementation of Pseudoclassical Inheritance</h2>
 
+<p>Here is an example of implementing Pseudoclassical Inheritance from <a href="http://bonsaiden.github.io/JavaScript-Garden/#object.prototype">JavaScript Garden</a>.
+The main idea is to <strong>create a dummy instance of the parent</strong> <code>Foo</code> via <code>new Foo</code> and also call the parent constructor.</p>
+
+<figure class='code'><figcaption><span>Naive Pseudoclassical Inheritance</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">Foo</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="mi">42</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">Foo</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">method</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{}</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">Bar</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">Foo</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">);</span> <span class="c1">// call parent constructor</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Set Bar&#39;s prototype to a new instance of Foo</span>
+</span><span class='line'><span class="nx">Bar</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Foo</span><span class="p">();</span>
+</span><span class='line'><span class="nx">Bar</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">foo</span> <span class="o">=</span> <span class="s1">&#39;Hello World&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Make sure to list Bar as the actual constructor</span>
+</span><span class='line'><span class="nx">Bar</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">=</span> <span class="nx">Bar</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">test</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Bar</span><span class="p">();</span> <span class="c1">// create a new bar instance</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>While this way of implementing Pseudoclassical Inheritance is not wrong per se, there is a little awkwardness to how the child&#8217;s prototype (<code>Bar.prototype</code>) is being set.
+Imagine the case, where the parent constructor takes in a couple parameters. It would be strange to invoke the <code>new Parent()</code> with dummy parameters because the instantiated object is a dummy instance. Additionally, the superclass’s constructor may have side effects (i.e. anything instance properties set in the superclass constructor get added to the prototype)or do something that is computationally intensive. Therefore, since the object that gets instantiated for the prototype is usually just a throwaway instance, you don’t want to create it unnecessarily.</p>
+
 <h2>General Implementation of Pseudoclassical Inheritance</h2>
+
+<p>To improve on the naive implementation of Pseudoclassical inheritance, we can <strong>create a dummy constructor</strong>, <strong>set it&#8217;s prototype to the prototype of the parent</strong>,
+and <strong>create a dummy instance that is used as the prototype of the child</strong>. Same as before, we also need to reset the prototype.constructor of the child to child(because the prototype needs to reference the appropraite constructor) and call the parent constructor in the child.</p>
+
+<blockquote><p>Use a dummy constructor when creating the object used for the prototype because superclass’s constructor may have side effects or do something that is computationally intensive</p></blockquote>
+
+<p>We can improve the the previous Foo Bar example like so:</p>
+
+<figure class='code'><figcaption><span>PseudoClassical Inheritance</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">Foo</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="mi">42</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">Foo</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">method</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{}</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">Bar</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">Foo</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">);</span> <span class="c1">// call parent constructor</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Set Bar&#39;s prototype to a new dummy instance that has use Foo.prototype for its prototype</span>
+</span><span class='line'><span class="nx">Bar</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Foo</span><span class="p">();</span><span class="c1">// Object.create(Foo.prototype)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Make sure to list Bar as the actual constructor</span>
+</span><span class='line'><span class="nx">Bar</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">=</span> <span class="nx">Bar</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">test</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Bar</span><span class="p">();</span> <span class="c1">// create a new bar instance</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/* Test&#39;s prototype chain</span>
+</span><span class='line'><span class="cm">  test -&gt; Bar.prototype -&gt; Foo.protoype -&gt; Object -&gt; null</span>
+</span><span class='line'><span class="cm">*/</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Pay close attention to the use of the native <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create">Object.create</a> method
+which creates a new object with the specified prototype object and properties.</p>
+
+<blockquote><p>The <code>Object.create()</code> method creates a new object with the specified prototype object and properties.</p></blockquote>
+
+<p>Here is a simple <a href="http://javascript.crockford.com/prototypal.html">Object.create polyfill</a> from Crockford&#8217;s website.</p>
+
+<figure class='code'><figcaption><span>Object.create</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span> <span class="o">!==</span> <span class="s1">&#39;function&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">o</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kd">function</span> <span class="nx">F</span><span class="p">()</span> <span class="p">{}</span>
+</span><span class='line'>        <span class="nx">F</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">o</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="nx">F</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And an optimized polyfill from <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create">MDN</a></p>
+
+<figure class='code'><figcaption><span>Object.create polyfill</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span> <span class="o">!=</span> <span class="s1">&#39;function&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nb">Object</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{};</span>
+</span><span class='line'>    <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">prototype</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">throw</span> <span class="nb">Error</span><span class="p">(</span><span class="s1">&#39;Second argument not supported&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">prototype</span> <span class="o">!=</span> <span class="s1">&#39;object&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">throw</span> <span class="nx">TypeError</span><span class="p">(</span><span class="s1">&#39;Argument must be an object&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">prototype</span><span class="p">;</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Object</span><span class="p">();</span>
+</span><span class='line'>      <span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+</span><span class='line'>      <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'>  <span class="p">})();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <h2>Pseudoclassical Inheritance in the wild</h2>
 
+<p>Based on our understanding of why and how to implement Pseudoclassical Inheritance, now we&#8217;ll take
+a look at how this pattern is being used for large JavaScript Libraries.</p>
+
 <h3>Google Closure</h3>
 
-<p>Closure is a set of individual JavaScript tools that are also designed to help developers build complex web applications, and is used by Gmail, Google Maps, and Google Docs.</p>
+<p>Closure is a set of individual JavaScript tools that are also designed to help developers build complex web applications, and is used by Gmail, Google Maps, and Google Docs.
+Inheritance in Google Closure is implementance via Pseudoclassical Inheritance. Google closure also adds a <code>base</code> method to the child constructor to expose
+a covenient way to invoke parent methods.</p>
 
 <!--
 https://developers.google.com/closure/faq#gwt
 -->
 
 
+<figure class='code'><figcaption><span>Inheritance via Google Closure</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Inherit the prototype methods from one constructor into another.</span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> * Usage:</span>
+</span><span class='line'><span class="cm"> * &lt;pre&gt;</span>
+</span><span class='line'><span class="cm"> * function ParentClass(a, b) { }</span>
+</span><span class='line'><span class="cm"> * ParentClass.prototype.foo = function(a) { };</span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> * function ChildClass(a, b, c) {</span>
+</span><span class='line'><span class="cm"> *   ChildClass.base(this, &#39;constructor&#39;, a, b);</span>
+</span><span class='line'><span class="cm"> * }</span>
+</span><span class='line'><span class="cm"> * goog.inherits(ChildClass, ParentClass);</span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> * var child = new ChildClass(&#39;a&#39;, &#39;b&#39;, &#39;see&#39;);</span>
+</span><span class='line'><span class="cm"> * child.foo(); // This works.</span>
+</span><span class='line'><span class="cm"> * &lt;/pre&gt;</span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> * @param {Function} childCtor Child class.</span>
+</span><span class='line'><span class="cm"> * @param {Function} parentCtor Parent class.</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="nx">goog</span><span class="p">.</span><span class="nx">inherits</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">childCtor</span><span class="p">,</span> <span class="nx">parentCtor</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="cm">/** @constructor */</span>
+</span><span class='line'>  <span class="kd">function</span> <span class="nx">tempCtor</span><span class="p">()</span> <span class="p">{};</span>
+</span><span class='line'>  <span class="nx">tempCtor</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">parentCtor</span><span class="p">.</span><span class="nx">prototype</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">childCtor</span><span class="p">.</span><span class="nx">superClass_</span> <span class="o">=</span> <span class="nx">parentCtor</span><span class="p">.</span><span class="nx">prototype</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">childCtor</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">tempCtor</span><span class="p">();</span>
+</span><span class='line'>  <span class="cm">/** @override */</span>
+</span><span class='line'>  <span class="nx">childCtor</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">=</span> <span class="nx">childCtor</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="cm">/**</span>
+</span><span class='line'><span class="cm">   * Calls superclass constructor/method.</span>
+</span><span class='line'><span class="cm">   *</span>
+</span><span class='line'><span class="cm">   * This function is only available if you use goog.inherits to</span>
+</span><span class='line'><span class="cm">   * express inheritance relationships between classes.</span>
+</span><span class='line'><span class="cm">   *</span>
+</span><span class='line'><span class="cm">   * NOTE: This is a replacement for goog.base and for superClass_</span>
+</span><span class='line'><span class="cm">   * property defined in childCtor.</span>
+</span><span class='line'><span class="cm">   *</span>
+</span><span class='line'><span class="cm">   * @param {!Object} me Should always be &quot;this&quot;.</span>
+</span><span class='line'><span class="cm">   * @param {string} methodName The method name to call. Calling</span>
+</span><span class='line'><span class="cm">   *     superclass constructor can be done with the special string</span>
+</span><span class='line'><span class="cm">   *     &#39;constructor&#39;.</span>
+</span><span class='line'><span class="cm">   * @param {...*} var_args The arguments to pass to superclass</span>
+</span><span class='line'><span class="cm">   *     method/constructor.</span>
+</span><span class='line'><span class="cm">   * @return {*} The return value of the superclass method/constructor.</span>
+</span><span class='line'><span class="cm">   */</span>
+</span><span class='line'>  <span class="nx">childCtor</span><span class="p">.</span><span class="nx">base</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">me</span><span class="p">,</span> <span class="nx">methodName</span><span class="p">,</span> <span class="nx">var_args</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">args</span> <span class="o">=</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">arguments</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">parentCtor</span><span class="p">.</span><span class="nx">prototype</span><span class="p">[</span><span class="nx">methodName</span><span class="p">].</span><span class="nx">apply</span><span class="p">(</span><span class="nx">me</span><span class="p">,</span> <span class="nx">args</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<!--
+https://github.com/google/closure-library/blob/master/closure/goog/base.js#L2087-L2137
+-->
+
+
 <h3>CoffeeScript</h3>
 
+<p>In addition to using Pseudoclassical inheritance for the underlying implementation of CoffeeScript,
+<a href="https://twitter.com/jashkenas">Jeremy Askenas</a> also discusses inconviences to libraries that try to
+provide a cleaner syntax for classical inheritance.</p>
+
 <blockquote><p>JavaScript&#8217;s prototypal inheritance has always been a bit of a brain-bender, with a whole family tree of libraries that provide a cleaner syntax for classical inheritance on top of JavaScript&#8217;s prototypes: <a href="https://code.google.com/p/base2/">Base2</a>, <a href="http://prototypejs.org/">Prototype.js</a>, <a href="http://prototypejs.org/">JS.Class</a>, etc. The libraries provide syntactic sugar, but the built-in inheritance would be completely usable if it weren&#8217;t for a couple of small exceptions: it&#8217;s awkward to call super (the prototype object&#8217;s implementation of the current function), and it&#8217;s awkward to correctly set the prototype chain.</p></blockquote>
+
+<p>The crux of Jeremy&#8217;s implementation of Pseudoclassical inheritance is the  <code>__extends</code> function.
+An interesting part of the implementation is the for loop which <strong>copies static methods</strong> from the parent
+onto the child.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'> <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">key</span> <span class="k">in</span> <span class="nx">parent</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">__hasProp</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">parent</span><span class="p">,</span> <span class="nx">key</span><span class="p">))</span> <span class="nx">child</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">parent</span><span class="p">[</span><span class="nx">key</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
 
 <!--
 http://coffeescript.org/#classes
@@ -530,7 +828,8 @@ https://github.com/jasmine/jasmine/blob/master/src/core/util.js#L3-L10
 -->
 
 
-
+<p><a href="http://jasmine.github.io/2.0/introduction.html">Jasmine</a> is a behavior-driven development framework for testing JavaScript code. In Jasmine,
+inherit is attached to the utility object util.</p>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -548,6 +847,10 @@ https://github.com/jasmine/jasmine/blob/master/src/core/util.js#L3-L10
 
 
 <h3>YUI3</h3>
+
+<p>YUI is a free, open source JavaScript and CSS library from Yahoo for building richly interactive web applications.</p>
+
+<p>The method in YUI for inheritance is <code>Y.extend</code> used like so <code>Y.extend(Programmer, Person);</code> where a Programmer inherits from Person.</p>
 
 <!--
 http://www.yuiblog.com/blog/2010/01/06/inheritance-patterns-in-yui-3/
@@ -639,6 +942,81 @@ https://github.com/yui/yui3/blob/master/src/oop/js/oop.js#L181-L220
 </span><span class='line'><span class="p">};</span>
 </span></code></pre></td></tr></table></div></figure>
 
+
+
+
+<!--
+https://github.com/yui/yui3/blob/master/src/yui/js/yui-object.js#L20-L47
+-->
+
+
+<p> <code>Y.Object</code> used within <code>Y.extend</code> is essentially a wrapper
+ for <code>Object.create</code> with a fallback. The fallback wraps the dummy constructor around an Immediately Invoked Function Expression(IIFE),
+ so that the dummy constuctor can be reused.</p>
+
+<figure class='code'><figcaption><span>Y.Object</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Returns a new object that uses _obj_ as its prototype. This method wraps the</span>
+</span><span class='line'><span class="cm"> * native ES5 `Object.create()` method if available, but doesn&#39;t currently</span>
+</span><span class='line'><span class="cm"> * pass through `Object.create()`&#39;s second argument (properties) in order to</span>
+</span><span class='line'><span class="cm"> * ensure compatibility with older browsers.</span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> * @method ()</span>
+</span><span class='line'><span class="cm"> * @param {Object} obj Prototype object.</span>
+</span><span class='line'><span class="cm"> * @return {Object} New object using _obj_ as its prototype.</span>
+</span><span class='line'><span class="cm"> * @static</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="nx">O</span> <span class="o">=</span> <span class="nx">Y</span><span class="p">.</span><span class="nb">Object</span> <span class="o">=</span> <span class="nx">Lang</span><span class="p">.</span><span class="nx">_isNative</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">)</span> <span class="o">?</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// We currently wrap the native Object.create instead of simply aliasing it</span>
+</span><span class='line'>    <span class="c1">// to ensure consistency with our fallback shim, which currently doesn&#39;t</span>
+</span><span class='line'>    <span class="c1">// support Object.create()&#39;s second argument (properties). Once we have a</span>
+</span><span class='line'>    <span class="c1">// safe fallback for the properties arg, we can stop wrapping</span>
+</span><span class='line'>    <span class="c1">// Object.create().</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">obj</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span> <span class="o">:</span> <span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// Reusable constructor function for the Object.create() shim.</span>
+</span><span class='line'>    <span class="kd">function</span> <span class="nx">F</span><span class="p">()</span> <span class="p">{}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// The actual shim.</span>
+</span><span class='line'>    <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">F</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="nx">F</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'><span class="p">}()),</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Conclusion</h2>
+
+<p>I hope this article sheds light on the advantages of using Pseudoclassical Inheritance over Functional Inheritance and clarifies
+how to implement Pseudoclassical Inheritance in an optimal manner.</p>
 </div>
   
   
