@@ -224,7 +224,7 @@ function Bar() {
 }
 
 // Set Bar's prototype to a new dummy instance that has use Foo.prototype for its prototype
-Bar.prototype = new Foo();// Object.create(Foo.prototype)
+Bar.prototype = Object.create(Foo.prototype); // new Foo(); 
 
 // Make sure to list Bar as the actual constructor
 Bar.prototype.constructor = Bar;
