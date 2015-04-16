@@ -4,7 +4,7 @@
   <title><![CDATA[Anthony Su]]></title>
   <link href="http://radialglo.github.com/atom.xml" rel="self"/>
   <link href="http://radialglo.github.com/"/>
-  <updated>2014-11-25T19:17:12-08:00</updated>
+  <updated>2015-04-16T15:19:35-07:00</updated>
   <id>http://radialglo.github.com/</id>
   <author>
     <name><![CDATA[Anthony Su]]></name>
@@ -407,7 +407,7 @@ and <strong>create a dummy instance that is used as the prototype of the child</
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'><span class="c1">// Set Bar&#39;s prototype to a new dummy instance that has use Foo.prototype for its prototype</span>
-</span><span class='line'><span class="nx">Bar</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Foo</span><span class="p">();</span><span class="c1">// Object.create(Foo.prototype)</span>
+</span><span class='line'><span class="nx">Bar</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">Foo</span><span class="p">.</span><span class="nx">prototype</span><span class="p">);</span> <span class="c1">// new Foo(); </span>
 </span><span class='line'>
 </span><span class='line'><span class="c1">// Make sure to list Bar as the actual constructor</span>
 </span><span class='line'><span class="nx">Bar</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">=</span> <span class="nx">Bar</span><span class="p">;</span>

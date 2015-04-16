@@ -493,7 +493,7 @@ and <strong>create a dummy instance that is used as the prototype of the child</
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'><span class="c1">// Set Bar&#39;s prototype to a new dummy instance that has use Foo.prototype for its prototype</span>
-</span><span class='line'><span class="nx">Bar</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Foo</span><span class="p">();</span><span class="c1">// Object.create(Foo.prototype)</span>
+</span><span class='line'><span class="nx">Bar</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">Foo</span><span class="p">.</span><span class="nx">prototype</span><span class="p">);</span> <span class="c1">// new Foo(); </span>
 </span><span class='line'>
 </span><span class='line'><span class="c1">// Make sure to list Bar as the actual constructor</span>
 </span><span class='line'><span class="nx">Bar</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">=</span> <span class="nx">Bar</span><span class="p">;</span>
@@ -1108,7 +1108,7 @@ how to implement Pseudoclassical Inheritance in an optimal manner.</p>
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2014 - Anthony Su -
+  Copyright &copy; 2015 - Anthony Su -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
